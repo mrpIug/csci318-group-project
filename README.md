@@ -1,4 +1,16 @@
 # csci318-group-project
+<h3>Project details</h3>
+<ul>
+    <li>Java 21
+    <li>Maven
+    <li>Springboot 3.5.5
+</ul>
+<h3>Dependencies</h3>
+<ul>
+    <li>Web
+    <li>JPA
+    <li>H2
+</ul>
 ⠛⠛⣿⣿⣿⣿⣿⡷⢶⣦⣶⣶⣤⣤⣤⣀<br>⠀
 ⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀<br>
 ⠀⠀⠀⠉⠉⠉⠙⠻⣿⣿⠿⠿⠛⠛⠛⠻⣿⣿⣇<br>
