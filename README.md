@@ -3,11 +3,20 @@ Collaborative dictionary for youngster slang such as "yeet", "huzz", "rizz", "un
 
 Unique features include slopGPT integration for outsourcing human thinking. Another great one we have is ROTLE, a wordle clone with the freazoidal twist of using slang instead of established english terms1!!1
 
+## How 2 run
+1. clone main
+2. put api key in .env (wont run without)
+3. navigate to directory with mvnw.cmd/mvnw
+4. - if windows: mvnw.cmd spring-boot:run
+   - if mac: ./mvnw spring-boot:run
+  
+## How 2 use feautres
+- WIP
+- 
 ## Technical deets
 - Java 21
 - Maven
 - Spring Boot 3.5.5
-- oh yeah and for ur api key just put it in the .env file it should work maybe lol
 
 ## Dependencies
 - spring-boot-starter-actuator
