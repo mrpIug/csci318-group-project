@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: rotionary
+
+  datasource:
+    url: jdbc:h2:mem:demo
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  cloud:
+    stream:
+      bindings:
+        slangEventsProcessor-in-0:
+          destination: slang-events
+        slangEventsProcessor-out-0:
+          destination: slang-processed
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+langchain4j:
+  google-ai-gemini:
+    chat-model:
+      api-key: ${GEMINI_API_KEY} 
+      model-name: gemini-2.0-flash-lite
+      temperature: 0.0
+      timeout: PT60s
+
+logging:
+    level:
+        dev:
+            langchain4j: DEBUG
