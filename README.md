@@ -5,7 +5,7 @@ Unique features include slopGPT integration for outsourcing human thinking. Anot
 
 ## How 2 run
 1. clone main
-2. put api key in .env (wont run without)
+2. put gemini api key in a .env at root (or inject env variables at runtime any way idc)
 3. navigate to directory with mvnw.cmd/mvnw
 4. - if windows: mvnw.cmd spring-boot:run
    - if mac: ./mvnw spring-boot:run
