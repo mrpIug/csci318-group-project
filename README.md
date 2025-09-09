@@ -7,6 +7,7 @@ Unique features include slopGPT integration for outsourcing human thinking. Anot
 - Java 21
 - Maven
 - Spring Boot 3.5.5
+- oh yeah and for ur api key just put it in the .env file it should work maybe lol
 
 ## Dependencies
 - spring-boot-starter-actuator
