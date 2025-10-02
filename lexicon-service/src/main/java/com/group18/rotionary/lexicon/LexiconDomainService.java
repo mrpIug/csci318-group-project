@@ -1,6 +1,5 @@
 package com.group18.rotionary.lexicon;
-
-import com.group18.rotionary.domain.lexicon.Term;
+import com.group18.rotionary.lexicon.domain.aggregates.Term;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

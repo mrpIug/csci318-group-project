@@ -1,13 +1,9 @@
-package com.group18.rotionary.domain.lexicon;
+package com.group18.rotionary.lexicon.domain.valueobjects;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * Tag Value Object - Represents a category tag for organizing slang terms
- * Part of the Lexicon bounded context
- */
 @Entity
 @Table(name = "tags")
 public class Tag {
@@ -28,10 +24,8 @@ public class Tag {
     @Column(name = "created_by")
     private String createdBy;
     
-    // Default constructor for JPA
     protected Tag() {}
     
-    // Domain constructor
     public Tag(String name, String description, String createdBy) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Tag name cannot be null or empty");
@@ -42,12 +36,10 @@ public class Tag {
         this.createdAt = LocalDateTime.now();
     }
     
-    // Domain methods
     public void updateDescription(String newDescription) {
         this.description = newDescription;
     }
     
-    // Getters
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
@@ -77,3 +69,5 @@ public class Tag {
                 '}';
     }
 }
+
+

@@ -1,13 +1,10 @@
-package com.group18.rotionary.domain.lexicon;
+package com.group18.rotionary.lexicon.domain.entities;
 
+import com.group18.rotionary.lexicon.domain.aggregates.Term;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * Definition Entity - Represents a definition for a slang term
- * Part of the Lexicon bounded context aggregate
- */
 @Entity
 @Table(name = "definitions")
 public class Definition {
@@ -35,10 +32,8 @@ public class Definition {
     @JoinColumn(name = "term_id", nullable = false)
     private Term term;
     
-    // Default constructor for JPA
     protected Definition() {}
     
-    // Domain constructor
     public Definition(String meaning, String example, String createdBy) {
         if (meaning == null || meaning.trim().isEmpty()) {
             throw new IllegalArgumentException("Meaning cannot be null or empty");
@@ -50,7 +45,6 @@ public class Definition {
         this.updatedAt = LocalDateTime.now();
     }
     
-    // Domain methods
     public void updateMeaning(String newMeaning) {
         if (newMeaning == null || newMeaning.trim().isEmpty()) {
             throw new IllegalArgumentException("Meaning cannot be null or empty");
@@ -64,7 +58,6 @@ public class Definition {
         this.updatedAt = LocalDateTime.now();
     }
     
-    // Getters
     public Long getId() { return id; }
     public String getMeaning() { return meaning; }
     public String getExample() { return example; }
@@ -73,8 +66,7 @@ public class Definition {
     public String getCreatedBy() { return createdBy; }
     public Term getTerm() { return term; }
     
-    // Package-private setter for JPA relationship management
-    void setTerm(Term term) {
+    public void setTerm(Term term) {
         this.term = term;
     }
     
@@ -101,3 +93,5 @@ public class Definition {
                 '}';
     }
 }
+
+

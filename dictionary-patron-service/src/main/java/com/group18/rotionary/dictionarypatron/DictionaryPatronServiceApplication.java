@@ -4,7 +4,9 @@ import io.github.cdimascio.dotenv.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "com.group18.rotionary.dictionarypatron"
+})
 public class DictionaryPatronServiceApplication {
 
 	public DictionaryPatronServiceApplication() {

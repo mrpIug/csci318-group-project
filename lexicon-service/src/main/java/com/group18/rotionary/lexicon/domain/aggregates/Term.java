@@ -1,5 +1,7 @@
-package com.group18.rotionary.domain.lexicon;
+package com.group18.rotionary.lexicon.domain.aggregates;
 
+import com.group18.rotionary.lexicon.domain.entities.Definition;
+import com.group18.rotionary.lexicon.domain.valueobjects.Tag;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,8 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Term Entity - Core entity representing a slang word in the lexicon
- * This is the aggregate root for the Lexicon bounded context
+ * Term Aggregate Root - Core entity representing a slang word in the lexicon
  */
 @Entity
 @Table(name = "terms")
@@ -44,10 +45,8 @@ public class Term {
     )
     private List<Tag> tags = new ArrayList<>();
     
-    // Default constructor for JPA
     protected Term() {}
     
-    // Domain constructor
     public Term(String word, String description, String createdBy) {
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be null or empty");
@@ -59,7 +58,6 @@ public class Term {
         this.updatedAt = LocalDateTime.now();
     }
     
-    // Domain methods
     public void addDefinition(Definition definition) {
         if (definition == null) {
             throw new IllegalArgumentException("Definition cannot be null");
@@ -99,7 +97,6 @@ public class Term {
         this.updatedAt = LocalDateTime.now();
     }
     
-    // Getters
     public Long getId() { return id; }
     public String getWord() { return word; }
     public String getDescription() { return description; }
@@ -132,3 +129,5 @@ public class Term {
                 '}';
     }
 }
+
+
