@@ -1,4 +1,4 @@
-package com.group18.rotionary.domain.events;
+package com.group18.rotionary.shared.domain.events;
 
 /**
  * WordOfTheDayUpdatedEvent - Published when the word of the day is updated

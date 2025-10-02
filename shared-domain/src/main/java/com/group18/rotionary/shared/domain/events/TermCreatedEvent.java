@@ -1,4 +1,4 @@
-package com.group18.rotionary.domain.events;
+package com.group18.rotionary.shared.domain.events;
 
 /**
  * TermCreatedEvent - Published when a new term is added to the lexicon

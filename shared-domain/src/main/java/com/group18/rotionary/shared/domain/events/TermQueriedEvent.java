@@ -1,4 +1,4 @@
-package com.group18.rotionary.domain.events;
+package com.group18.rotionary.shared.domain.events;
 
 /**
  * TermQueriedEvent - Published when a term is searched/queried
