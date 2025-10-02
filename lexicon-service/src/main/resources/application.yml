@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: lexicon-service
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:h2:mem:lexicon
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8081
+
+  cloud:
+    stream:
+      bindings:
+        termEvents-out-0:
+          destination: term-events
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+logging:
+  level:
+    com.group18.rotionary.lexicon: DEBUG

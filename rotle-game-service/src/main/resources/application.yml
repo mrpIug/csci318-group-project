@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: rotle-game-service
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:h2:mem:rotlegame
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8084
+
+  cloud:
+    stream:
+      bindings:
+        gameEventsProcessor-in-0:
+          destination: game-events
+        gameResults-out-0:
+          destination: game-results
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+logging:
+  level:
+    com.group18.rotionary.rotlegame: DEBUG

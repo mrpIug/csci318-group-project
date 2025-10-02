@@ -9,10 +9,19 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.group18</groupId>
-	<artifactId>rotionary</artifactId>
+	<artifactId>rotionary-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rotionary</name>
-	<description>Slang Dictionary</description>
+	<packaging>pom</packaging>
+	<name>rotionary-parent</name>
+	<description>Rot-ionary Microservices Parent Project</description>
+
+	<modules>
+		<module>shared-domain</module>
+		<module>lexicon-service</module>
+		<module>dictionary-patron-service</module>
+		<module>agentic-ai-service</module>
+		<module>rotle-game-service</module>
+	</modules>
 	<url/>
 
 	<licenses>
@@ -48,59 +57,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- spring cloud & non-offical depends -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
-		</dependency>
-
-		<dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-google-ai-gemini</artifactId>
-            <version>${langchain4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-google-ai-gemini-spring-boot-starter</artifactId>
-            <version>${langchain4j.beta-version}</version>
-        </dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv -->
-		<dependency>
-			<groupId>io.github.cdimascio</groupId>
-			<artifactId>java-dotenv</artifactId>
-			<version>5.2.2</version>
-		</dependency>
-
-	</dependencies>
 
 	<build>
 		<plugins>

@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: dictionary-patron-service
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:h2:mem:dictionarypatron
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8082
+
+  cloud:
+    stream:
+      bindings:
+        queryEventsProcessor-in-0:
+          destination: term-events
+        analyticsEvents-out-0:
+          destination: analytics-events
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+logging:
+  level:
+    com.group18.rotionary.dictionarypatron: DEBUG

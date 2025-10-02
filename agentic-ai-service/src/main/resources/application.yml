@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: agentic-ai-service
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:h2:mem:agenticai
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8083
+
+  cloud:
+    stream:
+      bindings:
+        aiRequestsProcessor-in-0:
+          destination: ai-requests
+        aiResults-out-0:
+          destination: ai-results
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+langchain4j:
+  google-ai-gemini:
+    chat-model:
+      api-key: ${GEMINI_API_KEY} 
+      model-name: gemini-2.0-flash
+      temperature: 0.7
+      timeout: PT60s
+
+logging:
+  level:
+    com.group18.rotionary.agenticai: DEBUG
+    dev.langchain4j: DEBUG
