@@ -18,8 +18,8 @@ server:
   cloud:
     stream:
       bindings:
-        termEvents-out-0:
-          destination: term-events
+        termQueried-out-0:
+          destination: term.queried
       kafka:
         binder:
           brokers: localhost:9092

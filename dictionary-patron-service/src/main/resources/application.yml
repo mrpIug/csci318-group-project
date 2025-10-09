@@ -18,10 +18,12 @@ server:
   cloud:
     stream:
       bindings:
-        queryEventsProcessor-in-0:
-          destination: term-events
-        analyticsEvents-out-0:
-          destination: analytics-events
+        recordQuery-in-0:
+          destination: term.queried
+        computeWotd-in-0:
+          destination: term.queried
+        computeWotd-out-0:
+          destination: word.of.day
       kafka:
         binder:
           brokers: localhost:9092

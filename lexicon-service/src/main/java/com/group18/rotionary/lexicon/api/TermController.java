@@ -21,15 +21,18 @@ public class TermController {
     private final TagRepository tagRepository;
     private final DefinitionRepository definitionRepository;
     private final LexiconDomainService domainService;
+    private final com.group18.rotionary.lexicon.infrastructure.TermEventPublisher eventPublisher;
 
     public TermController(TermRepository termRepository,
                           TagRepository tagRepository,
                           DefinitionRepository definitionRepository,
-                          LexiconDomainService domainService) {
+                          LexiconDomainService domainService,
+                          com.group18.rotionary.lexicon.infrastructure.TermEventPublisher eventPublisher) {
         this.termRepository = termRepository;
         this.tagRepository = tagRepository;
         this.definitionRepository = definitionRepository;
         this.domainService = domainService;
+        this.eventPublisher = eventPublisher;
     }
 
     @GetMapping
@@ -40,7 +43,11 @@ public class TermController {
     @GetMapping("/{id}")
     public ResponseEntity<Term> getById(@PathVariable Long id) {
         return termRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .map(term -> {
+                    eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+                            term.getId(), term.getWord(), "BY_ID", null, String.valueOf(id)));
+                    return ResponseEntity.ok(term);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -49,14 +56,31 @@ public class TermController {
                                              @RequestParam(required = false) String tag) {
         if (word != null) {
             return termRepository.findByWord(domainService.normalizeWord(word))
-                    .map(List::of)
+                    .map(found -> {
+                        eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+                                found.getId(), found.getWord(), "BY_WORD", null, word));
+                        return List.of(found);
+                    })
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.ok(List.of()));
         }
         if (tag != null) {
-            return ResponseEntity.ok(termRepository.findByTagName(tag.toLowerCase()));
+            List<Term> results = termRepository.findByTagName(tag.toLowerCase());
+            results.forEach(t -> eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+                    t.getId(), t.getWord(), "BY_TAG", null, tag)));
+            return ResponseEntity.ok(results);
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<Term> random() {
+        List<Term> all = termRepository.findAll();
+        if (all.isEmpty()) return ResponseEntity.notFound().build();
+        Term rnd = domainService.selectRandomTerm(all);
+        eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+                rnd.getId(), rnd.getWord(), "RANDOM_WORD", null, null));
+        return ResponseEntity.ok(rnd);
     }
 
     @PostMapping
