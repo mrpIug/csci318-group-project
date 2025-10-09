@@ -19,11 +19,10 @@ public class AiController {
 
     @PostMapping("/example-sentences")
     public ResponseEntity<Map<String, Object>> exampleSentences(@RequestBody Map<String, Object> body) {
-        @SuppressWarnings("unchecked")
-        List<String> terms = (List<String>) body.get("terms");
+        String term = String.valueOf(body.get("term"));
         String prompt = 
             "You are an expert in modern slang and internet language. " +
-            "Your task is to generate realistic example sentences showing how slang terms are used in context.\n" +
+            "Your task is to generate realistic example sentences showing how slang is used in context.\n" +
             "Guidelines:\n" +
             "- Create 3 natural example sentences\n" +
             "- Show different contexts and situations\n" +
@@ -34,7 +33,7 @@ public class AiController {
             "- Format as numbered list with periods between examples\n" +
             "- Do not use quotation marks\n" +
             "- Do not use line breaks, separate examples with periods\n" +
-            "Generate 3 concise example sentences that correctly use these slang terms: " + String.join(", ", terms) + ".";
+            "Generate 3 concise example sentences that correctly use the slang term " + term + ".";
         String content = chat.generate(prompt).content().text();
         return ResponseEntity.ok(Map.of("result", content));
     }
