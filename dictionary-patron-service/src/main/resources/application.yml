@@ -24,6 +24,8 @@ server:
           destination: term.queried
         computeWotd-out-0:
           destination: word.of.day
+        persistWotd-in-0:
+          destination: word.of.day
       kafka:
         binder:
           brokers: localhost:9092
