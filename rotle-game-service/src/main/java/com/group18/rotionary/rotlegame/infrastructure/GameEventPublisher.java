@@ -14,6 +14,6 @@ public class GameEventPublisher {
     }
 
     public void publishGameCompleted(GameCompletedEvent event) {
-        streamBridge.send("gameResults-out-0", event);
+        streamBridge.send("gameCompleted-out-0", event);
     }
 }

@@ -15,17 +15,21 @@ spring:
   cloud:
     stream:
       bindings:
-        recordQuery-in-0:
-          destination: term.queried
         computeWotd-in-0:
           destination: term.queried
+          group: wotd-processor
         computeWotd-out-0:
-          destination: word.of.day
-        persistWotd-in-0:
-          destination: word.of.day
+          destination: wotd.updates
+        wotdPersist-in-0:
+          destination: wotd.updates
+          group: wotd-persister
       kafka:
         binder:
           brokers: localhost:9092
+        streams:
+          binder:
+            configuration:
+              commit.interval.ms: 1000
 
 server:
   port: 8082

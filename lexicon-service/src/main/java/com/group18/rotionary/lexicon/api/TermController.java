@@ -73,10 +73,31 @@ public class TermController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/exists")
-    public ResponseEntity<Map<String, Boolean>> exists(@RequestParam String word) {
-        boolean exists = termRepository.findByWord(domainService.normalizeWord(word)).isPresent();
-        return ResponseEntity.ok(Map.of("exists", exists));
+    @GetMapping("/random")
+    public ResponseEntity<Term> random() {
+        List<Term> allTerms = termRepository.findAll();
+        if (allTerms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        Term randomTerm = domainService.selectRandomTerm(allTerms);
+        eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+            randomTerm.getId(), randomTerm.getWord(), "RANDOM", null, null));
+        return ResponseEntity.ok(randomTerm);
+    }
+
+    @GetMapping("/random-five")
+    public ResponseEntity<Term> randomFive() {
+        List<Term> allTerms = termRepository.findAll();
+        List<Term> fiveLetterTerms = allTerms.stream()
+            .filter(t -> t.getWord().length() == 5)
+            .toList();
+        if (fiveLetterTerms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        Term randomTerm = domainService.selectRandomTerm(fiveLetterTerms);
+        eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
+            randomTerm.getId(), randomTerm.getWord(), "RANDOM_FIVE", null, null));
+        return ResponseEntity.ok(randomTerm);
     }
     @PostMapping
     @Transactional
@@ -119,6 +140,24 @@ public class TermController {
         if (!termRepository.existsById(id)) return ResponseEntity.notFound().build();
         termRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity<Void> deleteAll() {
+        termRepository.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/definitions")
+    public ResponseEntity<List<Definition>> getDefinitions(@PathVariable Long id) {
+        return termRepository.findById(id)
+            .map(term -> {
+                List<Definition> definitions = term.getDefinition() != null ? 
+                    List.of(term.getDefinition()) : List.of();
+                return ResponseEntity.ok(definitions);
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{id}/definitions")

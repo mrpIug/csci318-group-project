@@ -15,10 +15,8 @@ spring:
   cloud:
     stream:
       bindings:
-        gameEventsProcessor-in-0:
-          destination: game-events
-        gameResults-out-0:
-          destination: game-results
+        gameCompleted-out-0:
+          destination: game.completed
       kafka:
         binder:
           brokers: localhost:9092

@@ -30,9 +30,9 @@ export GEMINI_API_KEY="your-gemini-api-key-here"
 ### Kafka Setup
 
 Ensure Apache Kafka is running on localhost:9092. The application will automatically create the required topics:
-- `term-queries`
-- `word-of-the-day`
-- `game-results`
+- `term.queried` - Term query events from lexicon service
+- `wotd.updates` - Word of the day updates from stream processing
+- `game.completed` - Game completion events from Rotle game service
 
 ## Running the Application
 
@@ -47,19 +47,28 @@ First, install the parent POM and shared domain:
 
 ### 2. Start Services
 
-Start each microservice in separate terminals:
+**Important**: Start Kafka first, then all services can be started in parallel.
+
+**Start Kafka** (if not already running):
+```bash
+# Start Zookeeper and Kafka (adjust paths as needed)
+bin/zookeeper-server-start.sh config/zookeeper.properties &
+bin/kafka-server-start.sh config/server.properties &
+```
+
+**Start each microservice** in separate terminals:
 
 **Lexicon Service (Port 8081):**
 ```bash
 ./mvnw -q -f lexicon-service/pom.xml spring-boot:run
 ```
 
-**Agentic AI Service (Port 8082):**
+**Agentic AI Service (Port 8083):**
 ```bash
 GEMINI_API_KEY=$GEMINI_API_KEY ./mvnw -q -f agentic-ai-service/pom.xml spring-boot:run
 ```
 
-**Dictionary Patron Service (Port 8083):**
+**Dictionary Patron Service (Port 8082):**
 ```bash
 ./mvnw -q -f dictionary-patron-service/pom.xml spring-boot:run
 ```
@@ -73,8 +82,25 @@ GEMINI_API_KEY=$GEMINI_API_KEY ./mvnw -q -f agentic-ai-service/pom.xml spring-bo
 
 ### Lexicon Service (Port 8081)
 
-**Add a new slang term:**
+**Base URL:** `http://localhost:8081/api/terms`
+
+#### Term Management
+
+**Get all terms:**
 ```bash
+GET /api/terms
+curl "http://localhost:8081/api/terms"
+```
+
+**Get term by ID:**
+```bash
+GET /api/terms/{id}
+curl "http://localhost:8081/api/terms/1"
+```
+
+**Create a new term:**
+```bash
+POST /api/terms
 curl -X POST http://localhost:8081/api/terms \
   -H "Content-Type: application/json" \
   -d '{
@@ -84,38 +110,9 @@ curl -X POST http://localhost:8081/api/terms \
   }'
 ```
 
-**Add a definition to a term:**
-```bash
-curl -X POST http://localhost:8081/api/terms/1/definitions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "meaning": "To throw something with force, often used as an exclamation of excitement",
-    "createdBy": "user123"
-  }'
-```
-
-**Search for terms:**
-```bash
-# Search by word
-curl "http://localhost:8081/api/terms/search?word=yeet"
-
-# Search by tag
-curl "http://localhost:8081/api/terms/search?tag=gen-z"
-
-# Get random term
-curl "http://localhost:8081/api/terms/random"
-
-# Get random 5-letter term (for Rotle game)
-curl "http://localhost:8081/api/terms/random-five"
-```
-
-**Get term by ID:**
-```bash
-curl "http://localhost:8081/api/terms/1"
-```
-
 **Update term tags:**
 ```bash
+PUT /api/terms/{id}
 curl -X PUT http://localhost:8081/api/terms/1 \
   -H "Content-Type: application/json" \
   -d '{
@@ -125,54 +122,122 @@ curl -X PUT http://localhost:8081/api/terms/1 \
 
 **Delete a term:**
 ```bash
+DELETE /api/terms/{id}
 curl -X DELETE http://localhost:8081/api/terms/1
 ```
 
-### Agentic AI Service (Port 8082)
+**Delete all terms:**
+```bash
+DELETE /api/terms
+curl -X DELETE http://localhost:8081/api/terms
+```
+
+#### Search and Discovery
+
+**Search by word:**
+```bash
+GET /api/terms/search?word={word}
+curl "http://localhost:8081/api/terms/search?word=yeet"
+```
+
+**Search by tag:**
+```bash
+GET /api/terms/search?tag={tag}
+curl "http://localhost:8081/api/terms/search?tag=gen-z"
+```
+
+**Get random term:**
+```bash
+GET /api/terms/random
+curl "http://localhost:8081/api/terms/random"
+```
+
+**Get random 5-letter term (for Rotle game):**
+```bash
+GET /api/terms/random-five
+curl "http://localhost:8081/api/terms/random-five"
+```
+
+#### Definitions
+
+**Get definitions for a term:**
+```bash
+GET /api/terms/{id}/definitions
+curl "http://localhost:8081/api/terms/1/definitions"
+```
+
+**Add definition to a term:**
+```bash
+POST /api/terms/{id}/definitions
+curl -X POST http://localhost:8081/api/terms/1/definitions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "meaning": "To throw something with force, often used as an exclamation of excitement",
+    "createdBy": "user123"
+  }'
+```
+
+### Agentic AI Service (Port 8083)
+
+**Base URL:** `http://localhost:8083/api/ai`
 
 **Get example sentences:**
 ```bash
-curl -X POST http://localhost:8082/api/ai/example-sentences \
+POST /api/ai/example-sentences
+curl -X POST http://localhost:8083/api/ai/example-sentences \
   -H "Content-Type: application/json" \
   -d '{
     "term": "yeet"
   }'
 ```
 
-**Get etymology:**
+**Get etymology analysis:**
 ```bash
-curl -X POST http://localhost:8082/api/ai/etymology \
+POST /api/ai/etymology
+curl -X POST http://localhost:8083/api/ai/etymology \
   -H "Content-Type: application/json" \
   -d '{
     "term": "yeet"
   }'
 ```
 
-**Suggest tags:**
+**Suggest tags for a word:**
 ```bash
-curl -X POST http://localhost:8082/api/ai/suggest-tags \
+POST /api/ai/suggest-tags
+curl -X POST http://localhost:8083/api/ai/suggest-tags \
   -H "Content-Type: application/json" \
   -d '{
     "word": "yeet"
   }'
 ```
 
-### Dictionary Patron Service (Port 8083)
+### Dictionary Patron Service (Port 8082)
 
-**Get word of the day:**
+**Base URL:** `http://localhost:8082/api`
+
+**Get current word of the day:**
 ```bash
-curl "http://localhost:8083/api/wotd/current"
+GET /api/wotd/current
+curl "http://localhost:8082/api/wotd/current"
 ```
 
-**Get analytics:**
+**Get top queried terms analytics:**
 ```bash
-curl "http://localhost:8083/api/analytics/top"
+GET /api/analytics/top?window={window}&limit={limit}
+curl "http://localhost:8082/api/analytics/top?window=24h&limit=10"
 ```
+
+**Parameters:**
+- `window`: Time window (e.g., "24h", "7d") - defaults to "24h"
+- `limit`: Number of results to return - defaults to 5
 
 ### Rotle Game Service (Port 8084)
 
+**Base URL:** `http://localhost:8084/api/game`
+
 **Start a new game:**
 ```bash
+POST /api/game/start
 curl -X POST http://localhost:8084/api/game/start \
   -H "Content-Type: application/json" \
   -d '{
@@ -180,46 +245,22 @@ curl -X POST http://localhost:8084/api/game/start \
   }'
 ```
 
-**Make a guess:**
+**Make a guess in a game:**
 ```bash
+POST /api/game/{id}/guess
 curl -X POST http://localhost:8084/api/game/1/guess \
   -H "Content-Type: application/json" \
   -d '{
-    "guess": "yeet"
+    "guess": "hello"
   }'
 ```
 
 **Get game state:**
 ```bash
+GET /api/game/{id}
 curl "http://localhost:8084/api/game/1"
 ```
 
-## Sample Data
-
-Here are some example slang terms you can add to test the system:
-
-```bash
-# Add some 5-letter terms for Rotle
-curl -X POST http://localhost:8081/api/terms \
-  -H "Content-Type: application/json" \
-  -d '{"word": "yeet", "createdBy": "test", "tags": ["slang", "gen-z", "exclamation"]}'
-
-curl -X POST http://localhost:8081/api/terms \
-  -H "Content-Type: application/json" \
-  -d '{"word": "rizz", "createdBy": "test", "tags": ["slang", "gen-z", "noun"]}'
-
-curl -X POST http://localhost:8081/api/terms \
-  -H "Content-Type: application/json" \
-  -d '{"word": "unc", "createdBy": "test", "tags": ["slang", "gen-z", "adjective"]}'
-
-curl -X POST http://localhost:8081/api/terms \
-  -H "Content-Type: application/json" \
-  -d '{"word": "slay", "createdBy": "test", "tags": ["slang", "gen-z", "verb"]}'
-
-curl -X POST http://localhost:8081/api/terms \
-  -H "Content-Type: application/json" \
-  -d '{"word": "buss", "createdBy": "test", "tags": ["slang", "gen-z", "adjective"]}'
-```
 
 ## Architecture
 

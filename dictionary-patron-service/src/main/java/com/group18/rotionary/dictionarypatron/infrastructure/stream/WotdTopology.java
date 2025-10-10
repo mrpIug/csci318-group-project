@@ -19,7 +19,7 @@ public class WotdTopology {
         return input -> input
                 .selectKey((k, v) -> v.getTermWord())
                 .groupByKey()
-                .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofHours(24)))
+                .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(5)))
                 .count()
                 .toStream()
                 .map((windowedKey, count) -> KeyValue.pair(windowedKey.window().endTime().toString(), new WordOfTheDayUpdatedEvent(
