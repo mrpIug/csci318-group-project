@@ -1,22 +1,22 @@
 package com.group18.rotionary.shared.domain.events;
 
 /**
- * GameCompletedEvent - Published when a Rotle game is completed
+ * GameCompletedEvent - Published when a Rotle game ends (won or lost)
  */
 public class GameCompletedEvent extends DomainEvent {
     
     private final Long gameId;
     private final String targetWord;
-    private final String gameStatus;
-    private final Integer attemptsUsed;
+    private final boolean won;
+    private final int attemptsCount;
     private final String userSession;
     
-    public GameCompletedEvent(Long gameId, String targetWord, String gameStatus, Integer attemptsUsed, String userSession) {
+    public GameCompletedEvent(Long gameId, String targetWord, boolean won, int attemptsCount, String userSession) {
         super("GameCompleted");
         this.gameId = gameId;
         this.targetWord = targetWord;
-        this.gameStatus = gameStatus;
-        this.attemptsUsed = attemptsUsed;
+        this.won = won;
+        this.attemptsCount = attemptsCount;
         this.userSession = userSession;
     }
     
@@ -28,12 +28,12 @@ public class GameCompletedEvent extends DomainEvent {
         return targetWord;
     }
     
-    public String getGameStatus() {
-        return gameStatus;
+    public boolean isWon() {
+        return won;
     }
     
-    public Integer getAttemptsUsed() {
-        return attemptsUsed;
+    public int getAttemptsCount() {
+        return attemptsCount;
     }
     
     public String getUserSession() {
@@ -45,8 +45,8 @@ public class GameCompletedEvent extends DomainEvent {
         return "GameCompletedEvent{" +
                 "gameId=" + gameId +
                 ", targetWord='" + targetWord + '\'' +
-                ", gameStatus='" + gameStatus + '\'' +
-                ", attemptsUsed=" + attemptsUsed +
+                ", won=" + won +
+                ", attemptsCount=" + attemptsCount +
                 ", userSession='" + userSession + '\'' +
                 ", " + super.toString() +
                 '}';

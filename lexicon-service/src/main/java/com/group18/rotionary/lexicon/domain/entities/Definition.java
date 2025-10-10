@@ -80,7 +80,6 @@ public class Definition {
         return "Definition{" +
                 "id=" + id +
                 ", meaning='" + meaning + '\'' +
-                ", example='" + example + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

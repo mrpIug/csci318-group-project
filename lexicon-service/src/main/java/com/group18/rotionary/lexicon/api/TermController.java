@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/terms")
@@ -72,16 +73,11 @@ public class TermController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/random")
-    public ResponseEntity<Term> random() {
-        List<Term> all = termRepository.findAll();
-        if (all.isEmpty()) return ResponseEntity.notFound().build();
-        Term rnd = domainService.selectRandomTerm(all);
-        eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
-                rnd.getId(), rnd.getWord(), "RANDOM_WORD", null, null));
-        return ResponseEntity.ok(rnd);
+    @GetMapping("/exists")
+    public ResponseEntity<Map<String, Boolean>> exists(@RequestParam String word) {
+        boolean exists = termRepository.findByWord(domainService.normalizeWord(word)).isPresent();
+        return ResponseEntity.ok(Map.of("exists", exists));
     }
-
     @PostMapping
     @Transactional
     public ResponseEntity<Term> create(@RequestBody CreateTermRequest request) {

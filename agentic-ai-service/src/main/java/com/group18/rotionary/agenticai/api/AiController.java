@@ -61,7 +61,6 @@ public class AiController {
     @PostMapping("/suggest-tags")
     public ResponseEntity<Map<String, Object>> suggestTags(@RequestBody Map<String, Object> body) {
         String word = String.valueOf(body.get("word"));
-        String description = String.valueOf(body.get("description"));
         String prompt = 
             "You are an expert in categorizing modern slang and internet language. " +
             "Your task is to suggest appropriate tags/categories for slang terms.\n" +
@@ -75,8 +74,8 @@ public class AiController {
             "- Be specific but concise\n" +
             "- Do not use quotation marks\n" +
             "- Do not use line breaks, separate tags with commas\n" +
-            "Suggest 3-6 concise tags for the slang term '" + word + "' described as '" + description + "'. Return a JSON array named 'tags'.";
-        String content = ai.suggestTags(word, description);
+            "Suggest 3-6 concise tags for the slang term '" + word + "'. Return a JSON array named 'tags'.";
+        String content = ai.suggestTags(word);
         return ResponseEntity.ok(Map.of("result", content));
     }
 }
