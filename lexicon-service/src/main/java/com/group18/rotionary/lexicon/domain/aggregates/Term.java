@@ -1,7 +1,6 @@
 package com.group18.rotionary.lexicon.domain.aggregates;
 
 import com.group18.rotionary.lexicon.domain.entities.Definition;
-import com.group18.rotionary.lexicon.domain.valueobjects.TermWord;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -20,8 +19,8 @@ public class Term {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Embedded
-    private TermWord word;
+    @Column(name = "word", nullable = false, length = 50)
+    private String word;
     
     
     @Column(name = "created_at")
@@ -48,7 +47,7 @@ public class Term {
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be null or empty");
         }
-        this.word = new TermWord(word);
+        this.word = word.trim().toLowerCase();
         this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -82,7 +81,7 @@ public class Term {
     
     
     public Long getId() { return id; }
-    public String getWord() { return word.getValue(); }
+    public String getWord() { return word; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getCreatedBy() { return createdBy; }
@@ -94,19 +93,19 @@ public class Term {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Term term = (Term) o;
-        return Objects.equals(word.getValue(), term.word.getValue());
+        return Objects.equals(word, term.word);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(word.getValue());
+        return Objects.hash(word);
     }
     
     @Override
     public String toString() {
         return "Term{" +
                 "id=" + id +
-                ", word='" + word.getValue() + '\'' +
+                ", word='" + word + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

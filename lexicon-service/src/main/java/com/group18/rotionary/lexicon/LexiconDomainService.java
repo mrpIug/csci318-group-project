@@ -78,36 +78,6 @@ public class LexiconDomainService {
         return fiveCharTerms.get(randomIndex);
     }
     
-    /**
-     * Suggests tags for a term based on its content
-     */
-    public List<String> suggestTagsForTerm(String word) {
-        // This is a simplified implementation
-        // In a real application, this might use AI or more sophisticated logic
-        List<String> suggestions = new java.util.ArrayList<>();
-        
-        if (word != null) {
-            String content = word.toLowerCase();
-            
-            if (content.contains("gaming") || content.contains("game")) {
-                suggestions.add("gaming");
-            }
-            if (content.contains("social") || content.contains("media")) {
-                suggestions.add("social-media");
-            }
-            if (content.contains("internet") || content.contains("online")) {
-                suggestions.add("internet");
-            }
-            if (content.contains("young") || content.contains("teen")) {
-                suggestions.add("youth");
-            }
-            if (content.contains("slang") || content.contains("informal")) {
-                suggestions.add("slang");
-            }
-        }
-        
-        return suggestions;
-    }
     
     /**
      * Normalizes a word for consistent storage and comparison
