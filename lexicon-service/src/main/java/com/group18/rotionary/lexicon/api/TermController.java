@@ -3,7 +3,6 @@ package com.group18.rotionary.lexicon.api;
 import com.group18.rotionary.lexicon.LexiconDomainService;
 import com.group18.rotionary.lexicon.domain.aggregates.Term;
 import com.group18.rotionary.lexicon.domain.entities.Definition;
-import com.group18.rotionary.lexicon.domain.valueobjects.Tag;
 import com.group18.rotionary.lexicon.api.dto.TermDtos.*;
 import com.group18.rotionary.lexicon.repository.*;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +17,15 @@ import java.util.List;
 public class TermController {
 
     private final TermRepository termRepository;
-    private final TagRepository tagRepository;
     private final DefinitionRepository definitionRepository;
     private final LexiconDomainService domainService;
     private final com.group18.rotionary.lexicon.infrastructure.TermEventPublisher eventPublisher;
 
     public TermController(TermRepository termRepository,
-                          TagRepository tagRepository,
                           DefinitionRepository definitionRepository,
                           LexiconDomainService domainService,
                           com.group18.rotionary.lexicon.infrastructure.TermEventPublisher eventPublisher) {
         this.termRepository = termRepository;
-        this.tagRepository = tagRepository;
         this.definitionRepository = definitionRepository;
         this.domainService = domainService;
         this.eventPublisher = eventPublisher;
@@ -65,7 +61,10 @@ public class TermController {
                     .orElse(ResponseEntity.ok(List.of()));
         }
         if (tag != null) {
-            List<Term> results = termRepository.findByTagName(tag.toLowerCase());
+            // simple filter by element collection tag
+            List<Term> results = termRepository.findAll().stream()
+                    .filter(t -> t.getTags().contains(tag.toLowerCase()))
+                    .toList();
             results.forEach(t -> eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
                     t.getId(), t.getWord(), "BY_TAG", null, tag)));
             return ResponseEntity.ok(results);
@@ -89,12 +88,10 @@ public class TermController {
         if (!domainService.isValidTerm(request.word())) {
             return ResponseEntity.badRequest().build();
         }
-        Term term = new Term(request.word(), request.description(), request.createdBy());
+        Term term = new Term(request.word(), request.createdBy());
         if (request.tags() != null) {
             for (String tagName : request.tags()) {
-                Tag tag = tagRepository.findByName(tagName.toLowerCase())
-                        .orElseGet(() -> tagRepository.save(new Tag(tagName, null, request.createdBy())));
-                term.addTag(tag);
+                term.addTag(tagName);
             }
         }
         Term saved = termRepository.save(term);
@@ -106,15 +103,14 @@ public class TermController {
     public ResponseEntity<Term> update(@PathVariable Long id, @RequestBody UpdateTermRequest request) {
         return termRepository.findById(id)
                 .map(term -> {
-                    if (request.description() != null) {
-                        term.updateDescription(request.description());
-                    }
                     if (request.tags() != null) {
-                        term.getTags().forEach(term::removeTag);
-                        for (String tagName : request.tags()) {
-                            Tag tag = tagRepository.findByName(tagName.toLowerCase())
-                                    .orElseGet(() -> tagRepository.save(new Tag(tagName, null, null)));
-                            term.addTag(tag);
+                        // replace tag list
+                        term.getTags().forEach(t -> {}); // no-op read to avoid removal during iteration
+                        List<String> newTags = request.tags();
+                        // clear and re-add
+                        term.getTags().clear();
+                        for (String tagName : newTags) {
+                            term.addTag(tagName);
                         }
                     }
                     return ResponseEntity.ok(term);
@@ -137,8 +133,8 @@ public class TermController {
         }
         return termRepository.findById(id)
                 .map(term -> {
-                    Definition def = new Definition(request.meaning(), request.example(), request.createdBy());
-                    term.addDefinition(def);
+                    Definition def = new Definition(request.meaning(), request.createdBy());
+                    term.setDefinition(def);
                     definitionRepository.save(def);
                     return ResponseEntity.ok(def);
                 })

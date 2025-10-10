@@ -38,6 +38,13 @@ public class GameController {
         games.save(game);
         return ResponseEntity.ok(attempt);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Game> get(@PathVariable Long id) {
+        return games.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
 
 

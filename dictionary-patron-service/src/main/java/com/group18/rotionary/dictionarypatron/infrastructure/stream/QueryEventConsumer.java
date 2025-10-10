@@ -4,14 +4,12 @@ import com.group18.rotionary.dictionarypatron.domain.entities.QueryEvent;
 import com.group18.rotionary.shared.domain.events.TermQueriedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.group18.rotionary.dictionarypatron.repository.QueryEventRepository;
 
 import java.util.function.Consumer;
 
 @Configuration
 public class QueryEventConsumer {
-
-    interface QueryEventRepository extends JpaRepository<QueryEvent, Long> {}
 
     private final QueryEventRepository repository;
 

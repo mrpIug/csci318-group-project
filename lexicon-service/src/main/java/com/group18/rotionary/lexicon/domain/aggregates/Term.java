@@ -1,7 +1,7 @@
 package com.group18.rotionary.lexicon.domain.aggregates;
 
 import com.group18.rotionary.lexicon.domain.entities.Definition;
-import com.group18.rotionary.lexicon.domain.valueobjects.Tag;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,8 +22,6 @@ public class Term {
     @Column(unique = true, nullable = false)
     private String word;
     
-    @Column(length = 1000)
-    private String description;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -34,77 +32,62 @@ public class Term {
     @Column(name = "created_by")
     private String createdBy;
     
-    @OneToMany(mappedBy = "term", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Definition> definitions = new ArrayList<>();
+    @OneToOne(mappedBy = "term", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    @JsonManagedReference
+    private Definition definition;
     
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "term_tags",
-        joinColumns = @JoinColumn(name = "term_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "term_tags", joinColumns = @JoinColumn(name = "term_id"))
+    @Column(name = "tag")
+    private List<String> tags = new ArrayList<>();
     
     protected Term() {}
     
-    public Term(String word, String description, String createdBy) {
+    public Term(String word, String createdBy) {
         if (word == null || word.trim().isEmpty()) {
             throw new IllegalArgumentException("Word cannot be null or empty");
         }
         this.word = word.toLowerCase().trim();
-        this.description = description;
         this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
     
-    public void addDefinition(Definition definition) {
+    public void setDefinition(Definition definition) {
         if (definition == null) {
             throw new IllegalArgumentException("Definition cannot be null");
         }
         definition.setTerm(this);
-        this.definitions.add(definition);
+        this.definition = definition;
         this.updatedAt = LocalDateTime.now();
     }
     
-    public void removeDefinition(Definition definition) {
-        if (definition != null) {
-            this.definitions.remove(definition);
-            definition.setTerm(null);
+    public void addTag(String tag) {
+        if (tag == null || tag.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tag cannot be null or empty");
+        }
+        String normalized = tag.toLowerCase().trim();
+        if (!this.tags.contains(normalized)) {
+            this.tags.add(normalized);
             this.updatedAt = LocalDateTime.now();
         }
     }
     
-    public void addTag(Tag tag) {
-        if (tag == null) {
-            throw new IllegalArgumentException("Tag cannot be null");
-        }
-        if (!this.tags.contains(tag)) {
-            this.tags.add(tag);
-            this.updatedAt = LocalDateTime.now();
-        }
-    }
-    
-    public void removeTag(Tag tag) {
+    public void removeTag(String tag) {
         if (tag != null) {
-            this.tags.remove(tag);
+            this.tags.remove(tag.toLowerCase().trim());
             this.updatedAt = LocalDateTime.now();
         }
     }
     
-    public void updateDescription(String newDescription) {
-        this.description = newDescription;
-        this.updatedAt = LocalDateTime.now();
-    }
     
     public Long getId() { return id; }
     public String getWord() { return word; }
-    public String getDescription() { return description; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getCreatedBy() { return createdBy; }
-    public List<Definition> getDefinitions() { return new ArrayList<>(definitions); }
-    public List<Tag> getTags() { return new ArrayList<>(tags); }
+    public Definition getDefinition() { return definition; }
+    public List<String> getTags() { return new ArrayList<>(tags); }
     
     @Override
     public boolean equals(Object o) {
@@ -124,7 +107,6 @@ public class Term {
         return "Term{" +
                 "id=" + id +
                 ", word='" + word + '\'' +
-                ", description='" + description + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

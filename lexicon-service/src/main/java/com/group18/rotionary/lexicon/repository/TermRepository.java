@@ -12,8 +12,7 @@ public interface TermRepository extends JpaRepository<Term, Long> {
 
     Optional<Term> findByWord(String word);
 
-    @Query("select t from Term t join t.tags tag where tag.name = :tagName")
-    List<Term> findByTagName(@Param("tagName") String tagName);
+    // tag search handled in controller using element collection filter
 }
 
 

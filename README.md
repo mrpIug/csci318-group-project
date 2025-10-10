@@ -9,6 +9,12 @@ Unique features include slopGPT integration for outsourcing human thinking. Anot
 3. navigate to directory with mvnw.cmd/mvnw
 4. - if windows: mvnw.cmd spring-boot:run
    - if mac: ./mvnw spring-boot:run
+
+### Launching Microservices
+./mvnw -q -f lexicon-service/pom.xml spring-boot:run
+GEMINI_API_KEY=$GEMINI_API_KEY ./mvnw -q -f agentic-ai-service/pom.xml spring-boot:run
+./mvnw -q -f dictionary-patron-service/pom.xml spring-boot:run
+./mvnw -q -f rotle-game-service/pom.xml spring-boot:run
   
 ## How 2 use feautres
 - WIP

@@ -1,7 +1,7 @@
 package com.group18.rotionary.dictionarypatron;
 
-import com.group18.rotionary.domain.dictionarypatron.DailyWOTD;
-import com.group18.rotionary.domain.dictionarypatron.QueryEvent;
+import com.group18.rotionary.dictionarypatron.domain.entities.DailyWOTD;
+import com.group18.rotionary.dictionarypatron.domain.entities.QueryEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

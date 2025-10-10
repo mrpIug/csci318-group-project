@@ -1,20 +1,19 @@
 package com.group18.rotionary.agenticai.api;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import com.group18.rotionary.agenticai.service.AiUseCases;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ai")
 public class AiController {
 
-    private final ChatLanguageModel chat;
+    private final AiUseCases ai;
 
-    public AiController(ChatLanguageModel chat) {
-        this.chat = chat;
+    public AiController(AiUseCases ai) {
+        this.ai = ai;
     }
 
     @PostMapping("/example-sentences")
@@ -34,7 +33,7 @@ public class AiController {
             "- Do not use quotation marks\n" +
             "- Do not use line breaks, separate examples with periods\n" +
             "Generate 3 concise example sentences that correctly use the slang term " + term + ".";
-        String content = chat.generate(prompt).content().text();
+        String content = ai.exampleSentences(term);
         return ResponseEntity.ok(Map.of("result", content));
     }
 
@@ -55,7 +54,7 @@ public class AiController {
             "- Do not use quotation marks\n" +
             "- Do not use line breaks, separate sentences with periods\n" +
             "Explain the etymology and timeline for the slang term " + term + ". Provide sections: origin, evolution timeline, notable usage.";
-        String content = chat.generate(prompt).content().text();
+        String content = ai.etymology(term);
         return ResponseEntity.ok(Map.of("result", content));
     }
 
@@ -77,7 +76,7 @@ public class AiController {
             "- Do not use quotation marks\n" +
             "- Do not use line breaks, separate tags with commas\n" +
             "Suggest 3-6 concise tags for the slang term '" + word + "' described as '" + description + "'. Return a JSON array named 'tags'.";
-        String content = chat.generate(prompt).content().text();
+        String content = ai.suggestTags(word, description);
         return ResponseEntity.ok(Map.of("result", content));
     }
 }

@@ -1,6 +1,7 @@
 package com.group18.rotionary.lexicon.domain.entities;
 
 import com.group18.rotionary.lexicon.domain.aggregates.Term;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,9 +17,6 @@ public class Definition {
     @Column(nullable = false, length = 2000)
     private String meaning;
     
-    @Column(length = 1000)
-    private String example;
-    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
@@ -30,16 +28,16 @@ public class Definition {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "term_id", nullable = false)
+    @JsonBackReference
     private Term term;
     
     protected Definition() {}
     
-    public Definition(String meaning, String example, String createdBy) {
+    public Definition(String meaning, String createdBy) {
         if (meaning == null || meaning.trim().isEmpty()) {
             throw new IllegalArgumentException("Meaning cannot be null or empty");
         }
         this.meaning = meaning.trim();
-        this.example = example;
         this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -53,14 +51,8 @@ public class Definition {
         this.updatedAt = LocalDateTime.now();
     }
     
-    public void updateExample(String newExample) {
-        this.example = newExample;
-        this.updatedAt = LocalDateTime.now();
-    }
-    
     public Long getId() { return id; }
     public String getMeaning() { return meaning; }
-    public String getExample() { return example; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getCreatedBy() { return createdBy; }

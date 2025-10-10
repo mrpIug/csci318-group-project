@@ -81,13 +81,13 @@ public class LexiconDomainService {
     /**
      * Suggests tags for a term based on its content
      */
-    public List<String> suggestTagsForTerm(String word, String description) {
+    public List<String> suggestTagsForTerm(String word) {
         // This is a simplified implementation
         // In a real application, this might use AI or more sophisticated logic
         List<String> suggestions = new java.util.ArrayList<>();
         
-        if (word != null && description != null) {
-            String content = (word + " " + description).toLowerCase();
+        if (word != null) {
+            String content = word.toLowerCase();
             
             if (content.contains("gaming") || content.contains("game")) {
                 suggestions.add("gaming");

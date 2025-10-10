@@ -39,11 +39,11 @@
 		<url/>
 	</scm>
 
-	<properties>
-		<java.version>21</java.version>
-		<langchain4j.version>1.4.0</langchain4j.version>
-        <langchain4j.beta-version>1.4.0-beta10</langchain4j.beta-version>
-	</properties>
+    <properties>
+        <java.version>21</java.version>
+        <langchain4j.version>1.6.0</langchain4j.version>
+        <langchain4j.beta-version>1.6.0</langchain4j.beta-version>
+    </properties>
 
 	<dependencyManagement>
 		<dependencies>
