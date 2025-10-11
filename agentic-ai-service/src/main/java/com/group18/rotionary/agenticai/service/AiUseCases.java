@@ -18,14 +18,30 @@ public class AiUseCases {
     }
 
     public String exampleSentences(String term) {
-        return exampleSentencesAiService.generateExamples(term);
+        return sanitizeResponse(exampleSentencesAiService.generateExamples(term));
     }
 
     public String etymology(String term) {
-        return etymologyAiService.explainEtymology(term);
+        return sanitizeResponse(etymologyAiService.explainEtymology(term));
     }
 
     public String suggestTags(String word) {
-        return tagSuggestionAiService.suggestTags(word);
+        return sanitizeResponse(tagSuggestionAiService.suggestTags(word));
+    }
+
+    private String sanitizeResponse(String response) {
+        if (response == null) {
+            return "";
+        }
+        
+        // Clean up escaped characters and newlines
+        return response
+            .replaceAll("\\\\n", " ")           // Replace \n with space
+            .replaceAll("\\\\\"", "\"")         // Replace \" with "
+            .replaceAll("\\\\'", "'")          // Replace \' with '
+            .replaceAll("\\n", " ")            // Replace actual newlines with space
+            .replaceAll("\\r", " ")            // Replace carriage returns with space
+            .replaceAll("\\s+", " ")           // Replace multiple whitespace with single space
+            .trim();                           // Remove leading/trailing whitespace
     }
 }

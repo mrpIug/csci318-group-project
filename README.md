@@ -274,36 +274,18 @@ GET /api/game/{id}
 curl "http://localhost:8084/api/game/1"
 ```
 
-## Architecture
-
-The application follows Domain-Driven Design principles with four bounded contexts:
-
-1. **Lexicon Service**: Manages slang terms and definitions
-2. **Agentic AI Service**: Provides AI-powered etymology and examples
-3. **Dictionary Patron Service**: Handles analytics and trending terms
-4. **Rotle Game Service**: Implements the Wordle-style game
-
-## Technology Stack
-
-- **Java 21**
-- **Spring Boot 3.5.5**
-- **Spring Data JPA**
-- **H2 Database** (for local development)
-- **Apache Kafka** (for event-driven communication)
-- **Google Gemini AI** (for AI features)
-- **LangChain4j** (for AI integration)
-- **Maven** (for build management)
-
-## Development
-
 ### Building the Project
 
 ```bash
 ./mvnw clean install
 ```
 
-### Running Tests
-
+### Kill specific microservices
 ```bash
-./mvnw test
+lsof -ti:<ms port> | xargs kill -9
+```
+
+### Kill all microservices
+```bash
+pkill -f "spring-boot"
 ```

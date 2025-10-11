@@ -9,6 +9,7 @@ public interface TagSuggestionAiService {
     @SystemMessage("""
         You are an expert in categorizing modern slang and internet language. 
         Your task is to suggest appropriate tags/categories for slang terms.
+        
         Guidelines:
         - Suggest 3 relevant tags
         - Include formality level (formal, informal, slang, vulgar)
@@ -17,8 +18,7 @@ public interface TagSuggestionAiService {
         - Include cultural context when relevant
         - Use comma-separated format
         - Be specific but concise
-        - Do not use quotation marks
-        - Do not use line breaks, separate tags with commas
+        - Do not use quotation marks or line breaks
         """)
     String suggestTags(@UserMessage String word);
 }
