@@ -1,40 +1,43 @@
 package com.group18.rotionary.agenticai.api;
 
-import com.group18.rotionary.agenticai.service.AiUseCases;
-import org.springframework.http.ResponseEntity;
+import com.group18.rotionary.agenticai.service.TagSuggestionAgent;
+import com.group18.rotionary.agenticai.service.SentenceGenerationAgent;
+import com.group18.rotionary.agenticai.service.EtymologyAgent;
+import dev.langchain4j.service.Result;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ai")
 public class AiController {
 
-    private final AiUseCases ai;
+    private final TagSuggestionAgent tagSuggestionAgent;
+    private final SentenceGenerationAgent sentenceGenerationAgent;
+    private final EtymologyAgent etymologyAgent;
 
-    public AiController(AiUseCases ai) {
-        this.ai = ai;
+    public AiController(TagSuggestionAgent tagSuggestionAgent,
+                       SentenceGenerationAgent sentenceGenerationAgent,
+                       EtymologyAgent etymologyAgent) {
+        this.tagSuggestionAgent = tagSuggestionAgent;
+        this.sentenceGenerationAgent = sentenceGenerationAgent;
+        this.etymologyAgent = etymologyAgent;
     }
 
-    @PostMapping("/example-sentences")
-    public ResponseEntity<Map<String, Object>> exampleSentences(@RequestBody Map<String, Object> body) {
-        String term = String.valueOf(body.get("term"));
-        String content = ai.exampleSentences(term);
-        return ResponseEntity.ok(Map.of("result", content));
+    @GetMapping("/tag-agent")
+    public String tagAgent(@RequestParam String sessionId, @RequestParam String userMessage) {
+        Result<String> result = tagSuggestionAgent.chat(sessionId, userMessage);
+        return result.content();
     }
 
-    @PostMapping("/etymology")
-    public ResponseEntity<Map<String, Object>> etymology(@RequestBody Map<String, Object> body) {
-        String term = String.valueOf(body.get("term"));
-        String content = ai.etymology(term);
-        return ResponseEntity.ok(Map.of("result", content));
+    @GetMapping("/sentence-agent")
+    public String sentenceAgent(@RequestParam String sessionId, @RequestParam String userMessage) {
+        Result<String> result = sentenceGenerationAgent.chat(sessionId, userMessage);
+        return result.content();
     }
 
-    @PostMapping("/suggest-tags")
-    public ResponseEntity<Map<String, Object>> suggestTags(@RequestBody Map<String, Object> body) {
-        String word = String.valueOf(body.get("word"));
-        String content = ai.suggestTags(word);
-        return ResponseEntity.ok(Map.of("result", content));
+    @GetMapping("/etymology-agent")
+    public String etymologyAgent(@RequestParam String sessionId, @RequestParam String userMessage) {
+        Result<String> result = etymologyAgent.chat(sessionId, userMessage);
+        return result.content();
     }
 }
 

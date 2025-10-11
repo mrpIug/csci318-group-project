@@ -193,35 +193,33 @@ curl -X POST http://localhost:8081/api/terms/1/definitions \
 
 **Base URL:** `http://localhost:8083/api/ai`
 
-**Get example sentences:**
+Rot-ionary's AI services provides three conversational agents with session-based memory. Each agent can have back-and-forth conversations with users.
+
+**Tag Suggestion Agent** - Suggests and adds tags to terms:
 ```bash
-POST /api/ai/example-sentences
-curl -X POST http://localhost:8083/api/ai/example-sentences \
-  -H "Content-Type: application/json" \
-  -d '{
-    "term": "yeet"
-  }'
+GET /api/ai/tag-agent?sessionId={id}&userMessage={message}
+curl -G "http://localhost:8083/api/ai/tag-agent" \
+  --data-urlencode "sessionId=1" \
+  --data-urlencode "userMessage=I need tags for the term 'yeet'"
 ```
 
-**Get etymology analysis:**
+**Sentence Generation Agent** - Creates customized example sentences:
 ```bash
-POST /api/ai/etymology
-curl -X POST http://localhost:8083/api/ai/etymology \
-  -H "Content-Type: application/json" \
-  -d '{
-    "term": "yeet"
-  }'
+GET /api/ai/sentence-agent?sessionId={id}&userMessage={message}
+curl -G "http://localhost:8083/api/ai/sentence-agent" \
+  --data-urlencode "sessionId=2" \
+  --data-urlencode "userMessage=Generate 3 casual sentences for 'lit'"
 ```
 
-**Suggest tags for a word:**
+**Etymology Agent** - Explains word origins and evolution:
 ```bash
-POST /api/ai/suggest-tags
-curl -X POST http://localhost:8083/api/ai/suggest-tags \
-  -H "Content-Type: application/json" \
-  -d '{
-    "word": "yeet"
-  }'
+GET /api/ai/etymology-agent?sessionId={id}&userMessage={message}
+curl -G "http://localhost:8083/api/ai/etymology-agent" \
+  --data-urlencode "sessionId=3" \
+  --data-urlencode "userMessage=What's the etymology of 'sus'?"
 ```
+
+**Note:** Use the same `sessionId` to continue a conversation. Each agent remembers the last 20 messages per session.
 
 ### Dictionary Analytics Service (Port 8082)
 
