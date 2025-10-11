@@ -18,7 +18,7 @@
 	<modules>
 		<module>shared-domain</module>
 		<module>lexicon-service</module>
-		<module>dictionary-patron-service</module>
+		<module>dictionary-analytics-service</module>
 		<module>agentic-ai-service</module>
 		<module>rotle-game-service</module>
 	</modules>

@@ -1,7 +1,7 @@
-package com.group18.rotionary.dictionarypatron;
+package com.group18.rotionary.dictionaryanalytics;
 
-import com.group18.rotionary.dictionarypatron.domain.entities.DailyWOTD;
-import com.group18.rotionary.dictionarypatron.domain.entities.QueryEvent;
+import com.group18.rotionary.dictionaryanalytics.domain.entities.DailyWOTD;
+import com.group18.rotionary.dictionaryanalytics.domain.entities.QueryEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Analytics Domain Service - Handles business logic for analytics and trending
- * Part of the Dictionary Patron bounded context
+ * Part of the Dictionary Analytics bounded context
  */
 @Service
 public class AnalyticsDomainService {

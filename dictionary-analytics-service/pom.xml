@@ -8,9 +8,9 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dictionary-patron-service</artifactId>
-	<name>dictionary-patron-service</name>
-	<description>Dictionary Patron Microservice</description>
+	<artifactId>dictionary-analytics-service</artifactId>
+	<name>dictionary-analytics-service</name>
+	<description>Dictionary Analytics Microservice</description>
 
 	<dependencies>
 		<dependency>

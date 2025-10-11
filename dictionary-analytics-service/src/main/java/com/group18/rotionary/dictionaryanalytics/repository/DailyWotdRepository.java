@@ -1,6 +1,6 @@
-package com.group18.rotionary.dictionarypatron.repository;
+package com.group18.rotionary.dictionaryanalytics.repository;
 
-import com.group18.rotionary.dictionarypatron.domain.entities.DailyWOTD;
+import com.group18.rotionary.dictionaryanalytics.domain.entities.DailyWOTD;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

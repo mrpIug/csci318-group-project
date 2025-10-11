@@ -1,11 +1,11 @@
 spring:
   application:
-    name: dictionary-patron-service
+    name: dictionary-analytics-service
   profiles:
     active: dev
 
   datasource:
-    url: jdbc:h2:mem:dictionarypatron
+    url: jdbc:h2:mem:dictionaryanalytics
     username: sa
     password:
   jpa:
@@ -13,16 +13,13 @@ spring:
       ddl-auto: update
 
   cloud:
+    function:
+      definition: recordQuery
     stream:
       bindings:
-        computeWotd-in-0:
+        recordQuery-in-0:
           destination: term.queried
-          group: wotd-processor
-        computeWotd-out-0:
-          destination: wotd.updates
-        wotdPersist-in-0:
-          destination: wotd.updates
-          group: wotd-persister
+          group: query-processor
       kafka:
         binder:
           brokers: localhost:9092
@@ -36,4 +33,4 @@ server:
 
 logging:
   level:
-    com.group18.rotionary.dictionarypatron: DEBUG
+    com.group18.rotionary.dictionaryanalytics: DEBUG

@@ -67,9 +67,9 @@ bin/kafka-server-start.sh config/server.properties &
 ./mvnw -q -f lexicon-service/pom.xml spring-boot:run
 ```
 
-**Dictionary Patron Service (Port 8082):**
+**Dictionary Analytics Service (Port 8082):**
 ```bash
-./mvnw -q -f dictionary-patron-service/pom.xml spring-boot:run
+./mvnw -q -f dictionary-analytics-service/pom.xml spring-boot:run
 ```
 
 **Agentic AI Service (Port 8083):**
@@ -224,7 +224,7 @@ curl -X POST http://localhost:8083/api/ai/suggest-tags \
   }'
 ```
 
-### Dictionary Patron Service (Port 8082)
+### Dictionary Analytics Service (Port 8082)
 
 **Base URL:** `http://localhost:8082/api`
 

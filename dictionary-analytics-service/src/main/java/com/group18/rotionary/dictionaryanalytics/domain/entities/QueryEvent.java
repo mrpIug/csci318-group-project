@@ -1,4 +1,4 @@
-package com.group18.rotionary.dictionarypatron.domain.entities;
+package com.group18.rotionary.dictionaryanalytics.domain.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
