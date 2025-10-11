@@ -105,6 +105,13 @@ public class TermController {
         if (!domainService.isValidTerm(request.word())) {
             return ResponseEntity.badRequest().build();
         }
+        
+        // Check if term already exists
+        String normalizedWord = domainService.normalizeWord(request.word());
+        if (termRepository.findByWord(normalizedWord).isPresent()) {
+            return ResponseEntity.status(409).build();
+        }
+        
         Term term = new Term(request.word(), request.createdBy());
         if (request.tags() != null) {
             for (String tagName : request.tags()) {

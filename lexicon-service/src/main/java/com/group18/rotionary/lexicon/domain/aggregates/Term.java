@@ -12,7 +12,7 @@ import java.util.Objects;
  * Term Aggregate Root - Core entity representing a slang word in the lexicon
  */
 @Entity
-@Table(name = "terms")
+@Table(name = "terms", uniqueConstraints = @UniqueConstraint(columnNames = "word"))
 public class Term {
     
     @Id
