@@ -69,6 +69,7 @@ public class Game {
 
         currentAttempt++;
         Attempt attempt = new Attempt(this, guess.toLowerCase().trim(), currentAttempt);
+        attempt.calculateResult(targetWord);
         this.attempts.add(attempt);
 
         if (guess.toLowerCase().trim().equals(targetWord)) {

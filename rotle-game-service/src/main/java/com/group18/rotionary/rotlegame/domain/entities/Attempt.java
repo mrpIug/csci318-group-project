@@ -2,6 +2,7 @@ package com.group18.rotionary.rotlegame.domain.entities;
 
 import com.group18.rotionary.rotlegame.domain.aggregates.Game;
 import com.group18.rotionary.rotlegame.domain.valueobjects.GuessResult;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class Attempt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
+    @JsonIgnore
     private Game game;
 
     protected Attempt() {}
