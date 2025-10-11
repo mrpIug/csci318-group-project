@@ -1,4 +1,4 @@
-# Rot-ionary: AI-Powered Slang Dictionary Microservice Application
+# Rot-ionary: Slang Dictionary Microservice Application
 
 A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc" and more, featuring AI-powered etymology analysis and a Wordle-style game called "Rotle".
 
@@ -29,7 +29,11 @@ export GEMINI_API_KEY="your-gemini-api-key-here"
 
 ### Kafka Setup
 
-Ensure Apache Kafka is running on localhost:9092. The application will automatically create the required topics:
+Ensure Apache Kafka is running with these commands (run in kafka folder):
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+./bin/kafka-server-start.sh ./config/server.properties
+
+Rot-ionary will automatically create the required topics:
 - `term.queried` - Term query events from lexicon service
 - `wotd.updates` - Word of the day updates from stream processing
 - `game.completed` - Game completion events from Rotle game service
@@ -63,14 +67,14 @@ bin/kafka-server-start.sh config/server.properties &
 ./mvnw -q -f lexicon-service/pom.xml spring-boot:run
 ```
 
-**Agentic AI Service (Port 8083):**
-```bash
-GEMINI_API_KEY=$GEMINI_API_KEY ./mvnw -q -f agentic-ai-service/pom.xml spring-boot:run
-```
-
 **Dictionary Patron Service (Port 8082):**
 ```bash
 ./mvnw -q -f dictionary-patron-service/pom.xml spring-boot:run
+```
+
+**Agentic AI Service (Port 8083):**
+```bash
+./mvnw -q -f agentic-ai-service/pom.xml spring-boot:run
 ```
 
 **Rotle Game Service (Port 8084):**
@@ -91,6 +95,10 @@ GEMINI_API_KEY=$GEMINI_API_KEY ./mvnw -q -f agentic-ai-service/pom.xml spring-bo
 GET /api/terms
 curl "http://localhost:8081/api/terms"
 ```
+**Get all terms but you can actually read them:**
+```bash
+scripts/list-terms.sh
+```
 
 **Get term by ID:**
 ```bash
@@ -108,6 +116,11 @@ curl -X POST http://localhost:8081/api/terms \
     "createdBy": "user123",
     "tags": ["slang", "gen-z", "exclamation"]
   }'
+```
+
+**Create 100 random terms:**
+```bash
+scripts/add-100-terms.sh
 ```
 
 **Update term tags:**
@@ -260,7 +273,6 @@ curl -X POST http://localhost:8084/api/game/1/guess \
 GET /api/game/{id}
 curl "http://localhost:8084/api/game/1"
 ```
-
 
 ## Architecture
 
