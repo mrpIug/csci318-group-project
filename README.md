@@ -55,7 +55,6 @@ First, install the parent POM and shared domain:
 
 **Start Kafka** (if not already running):
 ```bash
-# Start Zookeeper and Kafka (adjust paths as needed)
 bin/zookeeper-server-start.sh config/zookeeper.properties &
 bin/kafka-server-start.sh config/server.properties &
 ```

@@ -23,10 +23,10 @@ public class WordOfTheDayService {
     }
 
     /**
-     * Calculate and update Word of the Day every 20 seconds
+     * Calculate and update Word of the Day every 5 seconds
      * Based on the most queried term in the last hour
      */
-    @Scheduled(fixedRate = 20000) // Every 20 seconds
+    @Scheduled(fixedRate = 5000) // Every 5 seconds
     public void calculateWordOfTheDay() {
         try {
             // Get query events from the last hour
