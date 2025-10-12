@@ -17,8 +17,8 @@ public class Tools {
     private final RestTemplate restTemplate;
     private static final String LEXICON_SERVICE_URL = "http://localhost:8081/api/terms";
 
-    public Tools() {
-        this.restTemplate = new RestTemplate();
+    public Tools(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Tool("Add a tag to a term in the lexicon. Use this when the user confirms they want to add a specific tag.")
