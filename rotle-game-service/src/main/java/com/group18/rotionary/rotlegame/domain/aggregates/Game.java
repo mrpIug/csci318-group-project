@@ -88,6 +88,37 @@ public class Game {
     public boolean isLost() { return gameStatus == GameStatus.LOST; }
     public int getRemainingAttempts() { return maxAttempts - currentAttempt; }
 
+    // returns available letters (removes only letters that are absent from target word)
+    public java.util.List<Character> getAvailableLetters() {
+        java.util.Set<Character> absentLetters = new java.util.HashSet<>();
+        
+        // collect letters that are absent (not in the target word)
+        for (Attempt attempt : attempts) {
+            String guess = attempt.getGuess();
+            String pattern = attempt.getResult();
+            
+            for (int i = 0; i < guess.length(); i++) {
+                char letter = guess.charAt(i);
+                char feedback = pattern.charAt(i);
+                
+                // only mark as absent if letter is not in word at all
+                if (feedback == 'A') {
+                    absentLetters.add(letter);
+                }
+            }
+        }
+        
+        // return all letters except the absent ones
+        java.util.List<Character> available = new java.util.ArrayList<>();
+        for (char c = 'a'; c <= 'z'; c++) {
+            if (!absentLetters.contains(c)) {
+                available.add(c);
+            }
+        }
+        
+        return available;
+    }
+
     public Long getId() { return id; }
     public String getTargetWord() { return targetWord; }
     public Long getTargetWordId() { return targetWordId; }
@@ -102,6 +133,7 @@ public class Game {
 
     @Override
     public boolean equals(Object o) { if (this == o) return true; if (o == null || getClass() != o.getClass()) return false; Game game = (Game) o; return Objects.equals(id, game.id); }
+    
     @Override
     public int hashCode() { return Objects.hash(id); }
 

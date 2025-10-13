@@ -1,27 +1,19 @@
 # Rot-ionary: Slang Dictionary Microservice Application
 
-A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc" and more, featuring AI-powered etymology analysis and a Wordle-style game called "Rotle".
-
-## Features
-
-- **Slang Dictionary**: Add, edit, and search modern slang terms with definitions and tags
-- **AI Integration**: Get etymology explanations and example sentences using Google Gemini AI
-- **Rotle**: Play a Wordle-style game using 5-letter slang terms instead of the english language
-- **Real-time Analytics**: Track trending terms and word-of-the-day features
-- **Event-Driven Architecture**: Microservices communicate via Apache Kafka
+A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", and more, featuring agentic AI-powered features, analytics, and a Wordle-style game called "Rotle".
 
 ## Prerequisites
 
 - Java 21
 - Maven 3.6+
-- Apache Kafka (running on localhost:9092)
-- Google Gemini API Key
+- Apache Kafka
+- Gemini API Key
 
 ## Configuration
 
 ### Environment Variables
 
-Set your Google Gemini API key:
+Set your Gemini API key in your current terminal session to interact with the AI microservice:
 
 ```bash
 export GEMINI_API_KEY="your-gemini-api-key-here"
@@ -30,13 +22,12 @@ export GEMINI_API_KEY="your-gemini-api-key-here"
 ### Kafka Setup
 
 Ensure Apache Kafka is running with these commands (run in kafka folder):
+```bash
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+```
+```bash
 ./bin/kafka-server-start.sh ./config/server.properties
-
-Rot-ionary will automatically create the required topics:
-- `term.queried` - Term query events from lexicon service
-- `wotd.updates` - Word of the day updates from stream processing
-- `game.completed` - Game completion events from Rotle game service
+```
 
 ## Running the Application
 
@@ -51,12 +42,14 @@ First, install the parent POM and shared domain:
 
 ### 2. Start Services
 
-**Important**: Start Kafka first, then all services can be started in parallel.
+*Start Kafka first, then all services can be started in parallel.*
 
 **Start Kafka** (if not already running):
 ```bash
-bin/zookeeper-server-start.sh config/zookeeper.properties &
-bin/kafka-server-start.sh config/server.properties &
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+```
+```bash
+./bin/kafka-server-start.sh ./config/server.properties
 ```
 
 **Start each microservice** in separate terminals:
@@ -100,9 +93,9 @@ scripts/list-terms.sh
 
 **Get term by ID:**
 ```bash
-curl "http://localhost:8081/api/terms/<id>"
+curl "http://localhost:8081/api/terms/(id)"
 ```
-Replace <id> with a valid rot-ionary term id.
+*Replace (id) with a valid Rot-ionary term id.*
 
 **Create a new term:**
 ```bash
@@ -131,9 +124,9 @@ curl -X PUT http://localhost:8081/api/terms/1 \
 
 **Delete a term:**
 ```bash
-curl -X DELETE http://localhost:8081/api/terms/<id>
+curl -X DELETE http://localhost:8081/api/terms/(id)
 ```
-Replace <id> with a valid rot-ionary term id.
+*Replace (id) with a valid Rot-ionary term id.*
 
 
 **Delete all terms:**
@@ -167,56 +160,21 @@ curl "http://localhost:8081/api/terms/random-five"
 
 **Get definitions for a term:**
 ```bash
-curl "http://localhost:8081/api/terms/<id>/definitions"
+curl "http://localhost:8081/api/terms/(id)/definitions"
 ```
-Replace <id> with a valid rot-ionary term id.
+*Replace (id) with a valid Rot-ionary term id.*
 
 
 **Add definition to a term:**
 ```bash
-curl -X POST http://localhost:8081/api/terms/<id>/definitions \
+curl -X POST http://localhost:8081/api/terms/(id)/definitions \
   -H "Content-Type: application/json" \
   -d '{
     "meaning": "To throw something with force, often used as an exclamation of excitement",
     "createdBy": "user123"
   }'
 ```
-Replace <id> with a valid rot-ionary term id.
-
-
-### Agentic AI Service (Port 8083)
-
-**Base URL:** `http://localhost:8083/api/ai`
-
-Rot-ionary's AI services provides three conversational agents with session-based memory. Each agent can have back-and-forth conversations with users.
-
-**Tag Suggestion Agent** - Suggests and adds tags to terms:
-```bash
-curl -G "http://localhost:8083/api/ai/tag-agent" \
-  --data-urlencode "sessionId=1" \
-  --data-urlencode "userMessage=I need tags for the term <term>"
-```
-Replace <term> with a term that is already in Rot-ionary's databases.
-
-
-**Sentence Generation Agent** - Creates customized example sentences:
-```bash
-curl -G "http://localhost:8083/api/ai/sentence-agent" \
-  --data-urlencode "sessionId=2" \
-  --data-urlencode "userMessage=Generate 3 casual sentences for <term>"
-```
-Replace <term> with a term that is already in Rot-ionary's databases.
-
-
-**Etymology Agent** - Explains word origins and evolution:
-```bash
-curl -G "http://localhost:8083/api/ai/etymology-agent" \
-  --data-urlencode "sessionId=3" \
-  --data-urlencode "userMessage=What's the etymology of <term>?"
-```
-Replace <term> with a term that is already in Rot-ionary's databases.
-
-**Note:** Use the same `sessionId` to continue a conversation. Each agent remembers the last 20 messages per session.
+*Replace (id) with a valid Rot-ionary term id.*
 
 ### Dictionary Analytics Service (Port 8082)
 
@@ -226,6 +184,41 @@ Replace <term> with a term that is already in Rot-ionary's databases.
 ```bash
 curl "http://localhost:8082/api/wotd/current"
 ```
+
+### Agentic AI Service (Port 8083)
+
+**Base URL:** `http://localhost:8083/api/ai`
+
+Rot-ionary's AI services provide three conversational agents with session-based memory. 
+
+**Note**: Each service needs the target term to be in the Rot-ionary database already - If the term is absent, each agent can utilise the createTerm tool to add the desired word to the database automatically, provided they are given the word's definition and the user's username.
+
+**Tag Suggestion Agent** - Suggests and adds tags to terms:
+```bash
+curl -G "http://localhost:8083/api/ai/tag-agent" \
+  --data-urlencode "sessionId=1" \
+  --data-urlencode "userMessage=I need tags for the term '(term)'"
+```
+*Replace (term) with a term that is already in Rot-ionary's databases.*
+
+
+**Sentence Generation Agent** - Creates customized example sentences:
+```bash
+curl -G "http://localhost:8083/api/ai/sentence-agent" \
+  --data-urlencode "sessionId=2" \
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
+```
+*Replace (term) with a term that is already in Rot-ionary's databases.*
+
+**Etymology Agent** - Explains word origins and evolution:
+```bash
+curl -G "http://localhost:8083/api/ai/etymology-agent" \
+  --data-urlencode "sessionId=3" \
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+```
+*Replace (term) with a term that is already in Rot-ionary's databases.*
+
+**Note:** Use the same `sessionId` to continue a conversation. Each agent remembers the last 20 messages per session.
 
 ### Rotle Game Service (Port 8084)
 
@@ -242,23 +235,24 @@ curl -X POST http://localhost:8084/api/game/start \
 
 **Make a guess in a game:**
 ```bash
-curl -X POST http://localhost:8084/api/game/<id>/guess \
+curl -X POST http://localhost:8084/api/game/(id)/guess \
   -H "Content-Type: application/json" \
   -d '{
     "guess": "hello"
   }'
 ```
-Replace <id> with an active rotle game id.
+*Replace (id) with an active Rotle game id.*
+
+Each guess includes the attempt details and updated `availableLetters` list.
 
 
 **Get game state:**
 ```bash
-curl "http://localhost:8084/api/game/<id>"
+curl "http://localhost:8084/api/game/(id)"
 ```
-Replace <id> with an existing rotle game id.
+*Replace (id) with an existing Rotle game id.*
 
-**Note:** The target word is hidden until the game ends. Only then will the `targetWord` field be revealed in the response.
-
+## Technical Things
 
 ### Building the Project
 
@@ -268,13 +262,15 @@ Replace <id> with an existing rotle game id.
 
 ### Kill specific microservices
 ```bash
-lsof -ti:<ms port> | xargs kill -9
-ports for reference: 
-lexicon 8081
-analytics 8082
-ai 8083
-rotle 8084
+lsof -ti:(ms port) | xargs kill -9
 ```
+*Replace (ms port) with an active port.*
+
+Ports for reference: 
+- Lexicon - 8081
+- Dictionary Analytics - 8082
+- Agentic AI - 8083
+- Rotle Game - 8084
 
 ### Kill all microservices
 ```bash

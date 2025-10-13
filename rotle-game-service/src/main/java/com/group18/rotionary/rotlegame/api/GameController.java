@@ -1,5 +1,6 @@
 package com.group18.rotionary.rotlegame.api;
 
+import com.group18.rotionary.rotlegame.api.dto.AttemptResponse;
 import com.group18.rotionary.rotlegame.api.dto.GameResponse;
 import com.group18.rotionary.rotlegame.domain.aggregates.Game;
 import com.group18.rotionary.rotlegame.domain.entities.Attempt;
@@ -40,7 +41,7 @@ public class GameController {
     }
 
     @PostMapping("/{id}/guess")
-    public ResponseEntity<Attempt> guess(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<AttemptResponse> guess(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         Optional<Game> gameOpt = games.findById(id);
         if (gameOpt.isEmpty()) return ResponseEntity.notFound().build();
         
@@ -60,7 +61,7 @@ public class GameController {
             eventPublisher.publishGameCompleted(event);
         }
         
-        return ResponseEntity.ok(attempt);
+        return ResponseEntity.ok(AttemptResponse.fromAttempt(attempt, game));
     }
 
     @GetMapping("/{id}")

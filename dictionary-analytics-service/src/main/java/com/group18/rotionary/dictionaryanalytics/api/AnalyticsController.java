@@ -34,30 +34,6 @@ public class AnalyticsController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @GetMapping("/analytics/top")
-    public ResponseEntity<java.util.List<java.util.Map<String, Object>>> top(@RequestParam(defaultValue = "24h") String window,
-                                                                             @RequestParam(defaultValue = "5") int limit) {
-        java.time.LocalDateTime since = java.time.LocalDateTime.now().minusHours(parseHours(window));
-        var page = PageRequest.of(0, Math.max(1, limit));
-        var rows = queryRepo.findTopSince(since, page);
-        var list = new java.util.ArrayList<java.util.Map<String, Object>>();
-        for (var r : rows) {
-            list.add(java.util.Map.of(
-                    "termId", r.getTermId(),
-                    "termWord", r.getTermWord(),
-                    "queryCount", r.getCnt()
-            ));
-        }
-        return ResponseEntity.ok(list);
-    }
-
-    private long parseHours(String window) {
-        if (window != null && window.endsWith("h")) {
-            try { return Long.parseLong(window.substring(0, window.length() - 1)); } catch (Exception ignored) {}
-        }
-        return 24L;
-    }
 }
 
 

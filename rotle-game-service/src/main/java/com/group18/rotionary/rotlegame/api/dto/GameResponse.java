@@ -19,7 +19,8 @@ public record GameResponse(
     LocalDateTime completedAt,
     List<Attempt> attempts,
     Integer remainingAttempts,
-    String targetWord
+    String targetWord,
+    List<Character> availableLetters
 ) {
     public static GameResponse fromGame(Game game) {
         return new GameResponse(
@@ -33,7 +34,8 @@ public record GameResponse(
             game.getCompletedAt(),
             game.getAttempts(),
             game.getRemainingAttempts(),
-            game.isGameOver() ? game.getTargetWord() : "WILL BE REVEALED WHEN GAME ENDS"
+            game.isGameOver() ? game.getTargetWord() : "WILL BE REVEALED WHEN GAME ENDS",
+            game.getAvailableLetters()
         );
     }
 }
