@@ -210,7 +210,6 @@ Replace <term> with a term that is already in Rot-ionary's databases.
 
 **Etymology Agent** - Explains word origins and evolution:
 ```bash
-GET /api/ai/etymology-agent?sessionId={id}&userMessage={message}
 curl -G "http://localhost:8083/api/ai/etymology-agent" \
   --data-urlencode "sessionId=3" \
   --data-urlencode "userMessage=What's the etymology of <term>?"
@@ -227,15 +226,6 @@ Replace <term> with a term that is already in Rot-ionary's databases.
 ```bash
 curl "http://localhost:8082/api/wotd/current"
 ```
-
-**Get top queried terms analytics:**
-```bash
-curl "http://localhost:8082/api/analytics/top?window=24h&limit=10"
-```
-
-**Parameters:**
-- `window`: Time window (e.g., 24h, 7d)
-- `limit`: Number of terms to return
 
 ### Rotle Game Service (Port 8084)
 

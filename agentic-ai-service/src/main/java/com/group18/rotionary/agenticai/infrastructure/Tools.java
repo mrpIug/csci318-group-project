@@ -118,5 +118,51 @@ public class Tools {
             return "Error searching for term: " + e.getMessage();
         }
     }
+
+    @Tool("Create a new term in the lexicon with a word, definition, and username. Use when the user wants to add a new slang term.")
+    @SuppressWarnings("unchecked")
+    public String createTerm(String word, String definition, String username) {
+        try {
+            // check if term already exists
+            String searchUrl = LEXICON_SERVICE_URL + "/search?word=" + word;
+            List<Map<String, Object>> existingTerms = restTemplate.getForObject(searchUrl, List.class);
+            
+            if (existingTerms != null && !existingTerms.isEmpty()) {
+                return "Term '" + word + "' already exists in the lexicon. Cannot create duplicate.";
+            }
+            
+            // create the term
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            Map<String, Object> createTermRequest = Map.of(
+                "word", word,
+                "createdBy", username
+            );
+            
+            HttpEntity<Map<String, Object>> termEntity = new HttpEntity<>(createTermRequest, headers);
+            Map<String, Object> createdTerm = restTemplate.postForObject(LEXICON_SERVICE_URL, termEntity, Map.class);
+            
+            if (createdTerm == null) {
+                return "Error: Failed to create term '" + word + "'.";
+            }
+            
+            Long termId = ((Number) createdTerm.get("id")).longValue();
+            
+            // add the definition
+            String definitionUrl = LEXICON_SERVICE_URL + "/" + termId + "/definitions";
+            Map<String, Object> createDefinitionRequest = Map.of(
+                "meaning", definition,
+                "createdBy", username
+            );
+            
+            HttpEntity<Map<String, Object>> defEntity = new HttpEntity<>(createDefinitionRequest, headers);
+            restTemplate.postForObject(definitionUrl, defEntity, Map.class);
+            
+            return "Successfully created term '" + word + "' (ID: " + termId + ") with definition: " + definition;
+        } catch (Exception e) {
+            return "Error creating term: " + e.getMessage();
+        }
+    }
 }
 
