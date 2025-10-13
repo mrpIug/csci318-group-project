@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Term Aggregate Root - Core entity representing a slang word in the lexicon
- */
+// term aggregate root - main entity for slang words
 @Entity
 @Table(name = "terms", uniqueConstraints = @UniqueConstraint(columnNames = "word"))
 public class Term {

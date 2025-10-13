@@ -19,6 +19,7 @@ public interface EtymologyAgent {
         3. Discuss cultural context and how it spread (social media, memes, specific communities, etc.)
         4. Mention first known usage or popularisation if relevant
         5. Note any interesting linguistic features (portmanteau, acronym, borrowed from another language, etc.)
+        6. Mention websites, forums, games, sources, etc. where the term originated and became widespread from
         
         After providing the etymology, ask if they want more details about specific aspects:
         - Regional variations or usage differences

@@ -8,26 +8,20 @@ import org.springframework.web.client.RestClient;
 import java.time.LocalDate;
 import java.util.Map;
 
-/**
- * Rotle Game Service - Handles integration with Lexicon service
- * Part of the Rotle Game bounded context
- */
+// handles integration with lexicon service for rotle game
 @Service
 public class RotleGameService {
     
     private final RestClient restClient;
-    private final String lexiconBaseUrl;
     
     public RotleGameService(@Value("${lexicon.service.url:http://localhost:8081}") String lexiconBaseUrl) {
-        this.lexiconBaseUrl = lexiconBaseUrl;
         this.restClient = RestClient.builder()
                 .baseUrl(lexiconBaseUrl)
                 .build();
     }
     
-    /**
-     * Fetches a random 5-letter term from the Lexicon service
-     */
+    // grabs a random 5-letter term from lexicon service
+    @SuppressWarnings("unchecked")
     public TermInfo startNewGame() {
         try {
             Map<String, Object> response = restClient.get()
@@ -48,9 +42,8 @@ public class RotleGameService {
         }
     }
     
-    /**
-     * Validates if a guess is a valid term in the lexicon
-     */
+    // validates if guess term exists in lexicon
+    @SuppressWarnings("unchecked")
     public boolean validateGuess(String guess) {
         try {
             Map<String, Object> response = restClient.get()
@@ -60,21 +53,17 @@ public class RotleGameService {
             
             return response != null && Boolean.TRUE.equals(response.get("exists"));
         } catch (Exception e) {
-            // If validation fails, allow the guess (fail gracefully)
+            // allow the guess if validation fails
             return true;
         }
     }
     
-    /**
-     * Creates a new game with a random 5-letter term
-     */
+    // creates a new game with random 5-letter term
     public Game createNewGame(String userSession) {
         TermInfo termInfo = startNewGame();
         return new Game(termInfo.word(), termInfo.id(), LocalDate.now(), userSession);
     }
     
-    /**
-     * Data transfer object for term information
-     */
+    // data transfer object for term information
     public record TermInfo(Long id, String word) {}
 }

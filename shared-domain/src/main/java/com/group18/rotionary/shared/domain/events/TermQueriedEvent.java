@@ -1,8 +1,6 @@
 package com.group18.rotionary.shared.domain.events;
 
-/**
- * TermQueriedEvent - Published when a term is searched/queried
- */
+// published when a term is searched/queried
 public class TermQueriedEvent extends DomainEvent {
     
     private final Long termId;

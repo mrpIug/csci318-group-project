@@ -1,8 +1,6 @@
 package com.group18.rotionary.shared.domain.events;
 
-/**
- * GameCompletedEvent - Published when a Rotle game ends (won or lost)
- */
+// published when a rotle game ends (won or lost)
 public class GameCompletedEvent extends DomainEvent {
     
     private final Long gameId;

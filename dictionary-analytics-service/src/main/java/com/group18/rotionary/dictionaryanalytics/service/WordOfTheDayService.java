@@ -22,17 +22,12 @@ public class WordOfTheDayService {
         this.queryEventRepository = queryEventRepository;
     }
 
-    /**
-     * Calculate and update Word of the Day every 5 seconds
-     * Based on the most queried term in the last hour
-     */
-    @Scheduled(fixedRate = 5000) // Every 5 seconds
+    // updates word of the day every 5 seconds based on most queried term in last hour
+    @Scheduled(fixedRate = 5000)
     public void calculateWordOfTheDay() {
         try {
-            // Get query events from the last hour
             LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
             
-            // Find the most queried term in the last hour
             List<QueryEventRepository.TopTermCount> topTerms = queryEventRepository.findTopSince(
                 oneHourAgo, 
                 org.springframework.data.domain.PageRequest.of(0, 1)
@@ -42,7 +37,6 @@ public class WordOfTheDayService {
                 QueryEventRepository.TopTermCount topTerm = topTerms.get(0);
                 LocalDate today = LocalDate.now();
                 
-                // Update or create the WOTD for today
                 dailyWotdRepository.findByDate(today)
                     .ifPresentOrElse(
                         existing -> {
@@ -62,9 +56,7 @@ public class WordOfTheDayService {
         }
     }
 
-    /**
-     * Get the current Word of the Day
-     */
+    // gets current wotd
     public DailyWOTD getCurrentWordOfTheDay() {
         return dailyWotdRepository.findTopByOrderByDateDesc()
             .orElse(null);

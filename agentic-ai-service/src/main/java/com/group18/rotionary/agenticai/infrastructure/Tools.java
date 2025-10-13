@@ -25,7 +25,7 @@ public class Tools {
     @SuppressWarnings("unchecked")
     public String addTagToTerm(Long termId, String tagName) {
         try {
-            // First, get the current term to get existing tags
+            // grab current term to see existing tags
             String getUrl = LEXICON_SERVICE_URL + "/" + termId;
             Map<String, Object> term = restTemplate.getForObject(getUrl, Map.class);
             
@@ -33,7 +33,6 @@ public class Tools {
                 return "Error: Term with ID " + termId + " not found.";
             }
             
-            // Get existing tags
             List<String> tags = (List<String>) term.get("tags");
             if (tags == null) {
                 tags = List.of(tagName.toLowerCase().trim());
@@ -41,12 +40,11 @@ public class Tools {
                 if (tags.contains(tagName.toLowerCase().trim())) {
                     return "Tag '" + tagName + "' already exists on this term.";
                 }
-                // Add new tag to existing list
                 tags = new java.util.ArrayList<>(tags);
                 tags.add(tagName.toLowerCase().trim());
             }
             
-            // Update the term with the new tags
+            // send update with new tag list
             String updateUrl = LEXICON_SERVICE_URL + "/" + termId;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

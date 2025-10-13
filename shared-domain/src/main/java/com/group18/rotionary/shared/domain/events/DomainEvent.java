@@ -3,10 +3,7 @@ package com.group18.rotionary.shared.domain.events;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Domain Event base class for event-driven architecture
- * All domain events should extend this class
- */
+// base class for domain events
 public abstract class DomainEvent {
     
     private final String eventId;

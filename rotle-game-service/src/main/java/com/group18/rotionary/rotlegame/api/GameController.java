@@ -9,7 +9,6 @@ import com.group18.rotionary.shared.domain.events.GameCompletedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,7 +46,7 @@ public class GameController {
         Attempt attempt = game.makeAttempt(String.valueOf(body.get("guess")));
         games.save(game);
         
-        // Publish event if game is over
+        // publish event if game is over
         if (game.isGameOver()) {
             GameCompletedEvent event = new GameCompletedEvent(
                     game.getId(),

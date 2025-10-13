@@ -5,18 +5,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Lexicon Domain Service - Handles business logic for lexicon operations
- * Part of the Lexicon bounded context
- */
+// handles business logic for lexicon operations
 @Service
 public class LexiconDomainService {
     
     private final Random random = new Random();
     
-    /**
-     * Validates if a term meets the requirements for the lexicon
-     */
+    // validate term meets requirements (2-50 chars, letters only)
     public boolean isValidTerm(String word) {
         if (word == null || word.trim().isEmpty()) {
             return false;
@@ -24,15 +19,12 @@ public class LexiconDomainService {
         
         String cleanWord = word.trim().toLowerCase();
         
-        // Basic validation rules
         return cleanWord.length() >= 2 
                 && cleanWord.length() <= 50 
-                && cleanWord.matches("^[a-zA-Z]+$"); // Only letters
+                && cleanWord.matches("^[a-zA-Z]+$");
     }
     
-    /**
-     * Validates if a definition meets the requirements
-     */
+    // validate definition (10-2000 chars)
     public boolean isValidDefinition(String meaning) {
         if (meaning == null || meaning.trim().isEmpty()) {
             return false;
@@ -40,14 +32,11 @@ public class LexiconDomainService {
         
         String cleanMeaning = meaning.trim();
         
-        // Basic validation rules
         return cleanMeaning.length() >= 10 
                 && cleanMeaning.length() <= 2000;
     }
     
-    /**
-     * Selects a random term from the provided list
-     */
+    // picks a random term from the list
     public Term selectRandomTerm(List<Term> terms) {
         if (terms == null || terms.isEmpty()) {
             throw new IllegalArgumentException("Terms list cannot be null or empty");
@@ -57,15 +46,12 @@ public class LexiconDomainService {
         return terms.get(randomIndex);
     }
     
-    /**
-     * Selects a random 5-character term for Rotle game
-     */
+    // picks a random 5-letter term for rotle game
     public Term selectRandomTermForRotle(List<Term> terms) {
         if (terms == null || terms.isEmpty()) {
             throw new IllegalArgumentException("Terms list cannot be null or empty");
         }
         
-        // Filter terms that are exactly 5 characters
         List<Term> fiveCharTerms = terms.stream()
                 .filter(term -> term.getWord().length() == 5)
                 .collect(java.util.stream.Collectors.toList());
@@ -78,10 +64,7 @@ public class LexiconDomainService {
         return fiveCharTerms.get(randomIndex);
     }
     
-    
-    /**
-     * Normalizes a word for consistent storage and comparison
-     */
+    // normalizes word for storage/comparison
     public String normalizeWord(String word) {
         if (word == null) {
             return null;

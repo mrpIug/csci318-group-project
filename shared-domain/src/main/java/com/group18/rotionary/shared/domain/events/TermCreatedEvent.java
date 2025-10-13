@@ -1,8 +1,6 @@
 package com.group18.rotionary.shared.domain.events;
 
-/**
- * TermCreatedEvent - Published when a new term is added to the lexicon
- */
+// published when a new term is added to the lexicon
 public class TermCreatedEvent extends DomainEvent {
     
     private final Long termId;

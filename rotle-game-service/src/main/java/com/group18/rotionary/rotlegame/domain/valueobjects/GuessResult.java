@@ -2,16 +2,13 @@ package com.group18.rotionary.rotlegame.domain.valueobjects;
 
 import java.util.Objects;
 
-/**
- * GuessResult Value Object - Immutable representation of letter feedback in Rotle game
- * Encapsulates the logic for determining CORRECT, PRESENT, ABSENT feedback
- */
+// guess result value object - handles wordle-style letter feedback (correct/present/absent)
 public class GuessResult {
     
     public enum LetterFeedback {
-        CORRECT('C'),   // Letter is in correct position
-        PRESENT('P'),   // Letter is in word but wrong position  
-        ABSENT('A');    // Letter is not in word
+        CORRECT('C'),   // guess letter is in right spot
+        PRESENT('P'),   // guess letter is in word, but wrong spot
+        ABSENT('A');    // guess letter is not in word
         
         private final char symbol;
         
@@ -43,7 +40,7 @@ public class GuessResult {
         char[] guessChars = guess.toCharArray();
         boolean[] targetUsed = new boolean[5];
         
-        // First pass: mark CORRECT letters
+        // first pass: mark correct letters
         for (int i = 0; i < 5; i++) {
             if (guessChars[i] == targetChars[i]) {
                 result[i] = LetterFeedback.CORRECT.getSymbol();
@@ -51,9 +48,9 @@ public class GuessResult {
             }
         }
         
-        // Second pass: mark PRESENT letters
+        // second pass: mark present letters
         for (int i = 0; i < 5; i++) {
-            if (result[i] == 0) { // Not already marked as CORRECT
+            if (result[i] == 0) {
                 for (int j = 0; j < 5; j++) {
                     if (!targetUsed[j] && guessChars[i] == targetChars[j]) {
                         result[i] = LetterFeedback.PRESENT.getSymbol();
@@ -64,7 +61,7 @@ public class GuessResult {
             }
         }
         
-        // Third pass: mark ABSENT letters
+        // third pass: mark absent letters
         for (int i = 0; i < 5; i++) {
             if (result[i] == 0) {
                 result[i] = LetterFeedback.ABSENT.getSymbol();

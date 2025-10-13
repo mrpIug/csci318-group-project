@@ -19,15 +19,13 @@ public interface SentenceGenerationAgent {
            - Audience: gen-z, millennials, general, professional
            - How many examples they want (default 3)
         
-        2. Once you have their preferences (or if they provide them upfront), generate natural, 
-           realistic sentences based on those preferences
+        2. Once you have their preferences (or if they provide them upfront), generate natural, realistic sentences based on those preferences
         
         3. Show different contexts and situations when generating multiple examples
         
         4. Include proper grammar and punctuation
         
-        5. If they want simple/quick examples, you can skip the detailed questions and generate 
-           3 casual examples immediately
+        5. If they want simple/quick examples, you can skip the detailed questions and generate 3 casual examples immediately
 
         6. After making the sentences, ask them if they would like any more, and repeat the outlined process. If they say no, end the conversation.
         

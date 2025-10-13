@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/terms")
@@ -62,7 +61,7 @@ public class TermController {
                     .orElse(ResponseEntity.ok(List.of()));
         }
         if (tag != null) {
-            // simple filter by element collection tag
+            // filter by tag
             List<Term> results = termRepository.findAll().stream()
                     .filter(t -> t.getTags().contains(tag.toLowerCase()))
                     .toList();
@@ -106,7 +105,7 @@ public class TermController {
             return ResponseEntity.badRequest().build();
         }
         
-        // Check if term already exists
+        // check if term already exists
         String normalizedWord = domainService.normalizeWord(request.word());
         if (termRepository.findByWord(normalizedWord).isPresent()) {
             return ResponseEntity.status(409).build();
@@ -128,10 +127,8 @@ public class TermController {
         return termRepository.findById(id)
                 .map(term -> {
                     if (request.tags() != null) {
-                        // replace tag list
-                        term.getTags().forEach(t -> {}); // no-op read to avoid removal during iteration
+                        term.getTags().forEach(t -> {}); // no operation to avoid concurrent modification exception
                         List<String> newTags = request.tags();
-                        // clear and re-add
                         term.getTags().clear();
                         for (String tagName : newTags) {
                             term.addTag(tagName);

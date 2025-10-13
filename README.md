@@ -6,7 +6,7 @@ A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc" and
 
 - **Slang Dictionary**: Add, edit, and search modern slang terms with definitions and tags
 - **AI Integration**: Get etymology explanations and example sentences using Google Gemini AI
-- **Rotle Game**: Play a Wordle-style game using 5-letter slang terms
+- **Rotle**: Play a Wordle-style game using 5-letter slang terms instead of the english language
 - **Real-time Analytics**: Track trending terms and word-of-the-day features
 - **Event-Driven Architecture**: Microservices communicate via Apache Kafka
 
@@ -91,7 +91,6 @@ bin/kafka-server-start.sh config/server.properties &
 
 **Get all terms:**
 ```bash
-GET /api/terms
 curl "http://localhost:8081/api/terms"
 ```
 **Get all terms but you can actually read them:**
@@ -101,13 +100,12 @@ scripts/list-terms.sh
 
 **Get term by ID:**
 ```bash
-GET /api/terms/{id}
-curl "http://localhost:8081/api/terms/1"
+curl "http://localhost:8081/api/terms/<id>"
 ```
+Replace <id> with a valid rot-ionary term id.
 
 **Create a new term:**
 ```bash
-POST /api/terms
 curl -X POST http://localhost:8081/api/terms \
   -H "Content-Type: application/json" \
   -d '{
@@ -124,7 +122,6 @@ scripts/add-100-terms.sh
 
 **Update term tags:**
 ```bash
-PUT /api/terms/{id}
 curl -X PUT http://localhost:8081/api/terms/1 \
   -H "Content-Type: application/json" \
   -d '{
@@ -134,13 +131,13 @@ curl -X PUT http://localhost:8081/api/terms/1 \
 
 **Delete a term:**
 ```bash
-DELETE /api/terms/{id}
-curl -X DELETE http://localhost:8081/api/terms/1
+curl -X DELETE http://localhost:8081/api/terms/<id>
 ```
+Replace <id> with a valid rot-ionary term id.
+
 
 **Delete all terms:**
 ```bash
-DELETE /api/terms
 curl -X DELETE http://localhost:8081/api/terms
 ```
 
@@ -148,25 +145,21 @@ curl -X DELETE http://localhost:8081/api/terms
 
 **Search by word:**
 ```bash
-GET /api/terms/search?word={word}
 curl "http://localhost:8081/api/terms/search?word=yeet"
 ```
 
 **Search by tag:**
 ```bash
-GET /api/terms/search?tag={tag}
 curl "http://localhost:8081/api/terms/search?tag=gen-z"
 ```
 
 **Get random term:**
 ```bash
-GET /api/terms/random
 curl "http://localhost:8081/api/terms/random"
 ```
 
-**Get random 5-letter term (for Rotle game):**
+**Get random 5-letter term (see valid terms for rotle):**
 ```bash
-GET /api/terms/random-five
 curl "http://localhost:8081/api/terms/random-five"
 ```
 
@@ -174,20 +167,22 @@ curl "http://localhost:8081/api/terms/random-five"
 
 **Get definitions for a term:**
 ```bash
-GET /api/terms/{id}/definitions
-curl "http://localhost:8081/api/terms/1/definitions"
+curl "http://localhost:8081/api/terms/<id>/definitions"
 ```
+Replace <id> with a valid rot-ionary term id.
+
 
 **Add definition to a term:**
 ```bash
-POST /api/terms/{id}/definitions
-curl -X POST http://localhost:8081/api/terms/1/definitions \
+curl -X POST http://localhost:8081/api/terms/<id>/definitions \
   -H "Content-Type: application/json" \
   -d '{
     "meaning": "To throw something with force, often used as an exclamation of excitement",
     "createdBy": "user123"
   }'
 ```
+Replace <id> with a valid rot-ionary term id.
+
 
 ### Agentic AI Service (Port 8083)
 
@@ -197,27 +192,30 @@ Rot-ionary's AI services provides three conversational agents with session-based
 
 **Tag Suggestion Agent** - Suggests and adds tags to terms:
 ```bash
-GET /api/ai/tag-agent?sessionId={id}&userMessage={message}
 curl -G "http://localhost:8083/api/ai/tag-agent" \
   --data-urlencode "sessionId=1" \
-  --data-urlencode "userMessage=I need tags for the term 'yeet'"
+  --data-urlencode "userMessage=I need tags for the term <term>"
 ```
+Replace <term> with a term that is already in Rot-ionary's databases.
+
 
 **Sentence Generation Agent** - Creates customized example sentences:
 ```bash
-GET /api/ai/sentence-agent?sessionId={id}&userMessage={message}
 curl -G "http://localhost:8083/api/ai/sentence-agent" \
   --data-urlencode "sessionId=2" \
-  --data-urlencode "userMessage=Generate 3 casual sentences for 'lit'"
+  --data-urlencode "userMessage=Generate 3 casual sentences for <term>"
 ```
+Replace <term> with a term that is already in Rot-ionary's databases.
+
 
 **Etymology Agent** - Explains word origins and evolution:
 ```bash
 GET /api/ai/etymology-agent?sessionId={id}&userMessage={message}
 curl -G "http://localhost:8083/api/ai/etymology-agent" \
   --data-urlencode "sessionId=3" \
-  --data-urlencode "userMessage=What's the etymology of 'sus'?"
+  --data-urlencode "userMessage=What's the etymology of <term>?"
 ```
+Replace <term> with a term that is already in Rot-ionary's databases.
 
 **Note:** Use the same `sessionId` to continue a conversation. Each agent remembers the last 20 messages per session.
 
@@ -227,19 +225,17 @@ curl -G "http://localhost:8083/api/ai/etymology-agent" \
 
 **Get current word of the day:**
 ```bash
-GET /api/wotd/current
 curl "http://localhost:8082/api/wotd/current"
 ```
 
 **Get top queried terms analytics:**
 ```bash
-GET /api/analytics/top?window={window}&limit={limit}
 curl "http://localhost:8082/api/analytics/top?window=24h&limit=10"
 ```
 
 **Parameters:**
-- `window`: Time window (e.g., "24h", "7d") - defaults to "24h"
-- `limit`: Number of results to return - defaults to 5
+- `window`: Time window (e.g., 24h, 7d)
+- `limit`: Number of terms to return
 
 ### Rotle Game Service (Port 8084)
 
@@ -247,7 +243,6 @@ curl "http://localhost:8082/api/analytics/top?window=24h&limit=10"
 
 **Start a new game:**
 ```bash
-POST /api/game/start
 curl -X POST http://localhost:8084/api/game/start \
   -H "Content-Type: application/json" \
   -d '{
@@ -257,19 +252,21 @@ curl -X POST http://localhost:8084/api/game/start \
 
 **Make a guess in a game:**
 ```bash
-POST /api/game/{id}/guess
-curl -X POST http://localhost:8084/api/game/1/guess \
+curl -X POST http://localhost:8084/api/game/<id>/guess \
   -H "Content-Type: application/json" \
   -d '{
     "guess": "hello"
   }'
 ```
+Replace <id> with an active rotle game id.
+
 
 **Get game state:**
 ```bash
-GET /api/game/{id}
-curl "http://localhost:8084/api/game/1"
+curl "http://localhost:8084/api/game/<id>"
 ```
+Replace <id> with an existing rotle game id.
+
 
 ### Building the Project
 
@@ -280,6 +277,11 @@ curl "http://localhost:8084/api/game/1"
 ### Kill specific microservices
 ```bash
 lsof -ti:<ms port> | xargs kill -9
+ports for reference: 
+lexicon 8081
+analytics 8082
+ai 8083
+rotle 8084
 ```
 
 ### Kill all microservices
