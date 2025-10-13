@@ -257,6 +257,8 @@ curl "http://localhost:8084/api/game/<id>"
 ```
 Replace <id> with an existing rotle game id.
 
+**Note:** The target word is hidden until the game ends. Only then will the `targetWord` field be revealed in the response.
+
 
 ### Building the Project
 

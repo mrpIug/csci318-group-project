@@ -1,5 +1,6 @@
 package com.group18.rotionary.rotlegame.api;
 
+import com.group18.rotionary.rotlegame.api.dto.GameResponse;
 import com.group18.rotionary.rotlegame.domain.aggregates.Game;
 import com.group18.rotionary.rotlegame.domain.entities.Attempt;
 import com.group18.rotionary.rotlegame.repository.GameRepository;
@@ -27,11 +28,12 @@ public class GameController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<Game> start(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<GameResponse> start(@RequestBody Map<String, Object> body) {
         String session = String.valueOf(body.getOrDefault("userSession", "cli"));
         try {
             Game game = gameService.createNewGame(session);
-            return ResponseEntity.ok(games.save(game));
+            Game savedGame = games.save(game);
+            return ResponseEntity.ok(GameResponse.fromGame(savedGame));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -62,8 +64,9 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Game> get(@PathVariable Long id) {
+    public ResponseEntity<GameResponse> get(@PathVariable Long id) {
         return games.findById(id)
+                .map(GameResponse::fromGame)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
