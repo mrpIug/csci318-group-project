@@ -13,15 +13,32 @@ A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", an
 
 ### Environment Variables
 
-Set your Gemini API key in your current terminal session to interact with the AI microservice:
+#### Mac/Linux
+Set your Gemini API key in your current terminal session:
 
 ```bash
 export GEMINI_API_KEY="your-gemini-api-key-here"
 ```
 
+#### Windows (PowerShell)
+Set your Gemini API key in your current PowerShell session:
+
+```powershell
+$env:GEMINI_API_KEY = "your-gemini-api-key-here"
+```
+
 ### Kafka Setup
 
-Ensure Apache Kafka is running with these commands (run in kafka folder):
+#### Mac/Linux
+
+In Kafka root folder, clear zookeeper data directory first if zookeeper isn't starting:
+
+```bash
+rm -rf /tmp/zookeeper
+```
+
+Ensure Apache Kafka is running with these commands:
+
 ```bash
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
 ```
@@ -29,9 +46,28 @@ Ensure Apache Kafka is running with these commands (run in kafka folder):
 ./bin/kafka-server-start.sh ./config/server.properties
 ```
 
+#### Windows (PowerShell)
+
+In Kafka root folder, clear zookeeper data directory first if zookeeper isn't starting:
+
+```powershell
+Remove-Item -Recurse -Force C:\tmp\zookeeper -ErrorAction SilentlyContinue
+```
+
+Ensure Apache Kafka is running with these commands:
+
+```powershell
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+```
+```powershell
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+```
+
 ## Running the Application
 
 ### 1. Install Dependencies
+
+#### Mac/Linux
 
 First, install the parent POM and shared domain:
 
@@ -40,9 +76,20 @@ First, install the parent POM and shared domain:
 ./mvnw -q -pl shared-domain install
 ```
 
+#### Windows (PowerShell)
+
+First, install the parent POM and shared domain:
+
+```powershell
+.\mvnw.cmd -q -N install
+.\mvnw.cmd -q -pl shared-domain install
+```
+
 ### 2. Start Services
 
 *Start Kafka first, then all services can be started in parallel.*
+
+#### Mac/Linux
 
 **Start Kafka** (if not already running):
 ```bash
@@ -74,6 +121,38 @@ First, install the parent POM and shared domain:
 ./mvnw -q -f rotle-game-service/pom.xml spring-boot:run
 ```
 
+#### Windows (PowerShell)
+
+**Start Kafka** (if not already running):
+```powershell
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+```
+```powershell
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+```
+
+**Start each microservice** in separate terminals:
+
+**Lexicon Service (Port 8081):**
+```powershell
+.\mvnw.cmd -q -f lexicon-service/pom.xml spring-boot:run
+```
+
+**Dictionary Analytics Service (Port 8082):**
+```powershell
+.\mvnw.cmd -q -f dictionary-analytics-service/pom.xml spring-boot:run
+```
+
+**Agentic AI Service (Port 8083):**
+```powershell
+.\mvnw.cmd -q -f agentic-ai-service/pom.xml spring-boot:run
+```
+
+**Rotle Game Service (Port 8084):**
+```powershell
+.\mvnw.cmd -q -f rotle-game-service/pom.xml spring-boot:run
+```
+
 ## API Usage Examples
 
 ### Lexicon Service (Port 8081)
@@ -82,22 +161,9 @@ First, install the parent POM and shared domain:
 
 #### Term Management
 
-**Get all terms:**
-```bash
-curl "http://localhost:8081/api/terms"
-```
-**Get all terms but you can actually read them:**
-```bash
-scripts/list-terms.sh
-```
-
-**Get term by ID:**
-```bash
-curl "http://localhost:8081/api/terms/(id)"
-```
-*Replace (id) with a valid Rot-ionary term id.*
-
 **Create a new term:**
+
+Mac/Linux:
 ```bash
 curl -X POST http://localhost:8081/api/terms \
   -H "Content-Type: application/json" \
@@ -108,12 +174,23 @@ curl -X POST http://localhost:8081/api/terms \
   }'
 ```
 
+Windows (PowerShell):
+```powershell
+curl -X POST http://localhost:8081/api/terms `
+  -H "Content-Type: application/json" `
+  -d '{\"word\": \"yeet\", \"createdBy\": \"user123\", \"tags\": [\"slang\", \"gen-z\", \"exclamation\"]}'
+```
+
 **Create 100 random terms:**
+
+Mac/Linux:
 ```bash
 scripts/add-100-terms.sh
 ```
 
 **Update term tags:**
+
+Mac/Linux:
 ```bash
 curl -X PUT http://localhost:8081/api/terms/1 \
   -H "Content-Type: application/json" \
@@ -122,12 +199,18 @@ curl -X PUT http://localhost:8081/api/terms/1 \
   }'
 ```
 
+Windows (PowerShell):
+```powershell
+curl -X PUT http://localhost:8081/api/terms/1 `
+  -H "Content-Type: application/json" `
+  -d '{\"tags\": [\"slang\", \"gen-z\", \"exclamation\", \"gaming\"]}'
+```
+
 **Delete a term:**
 ```bash
 curl -X DELETE http://localhost:8081/api/terms/(id)
 ```
 *Replace (id) with a valid Rot-ionary term id.*
-
 
 **Delete all terms:**
 ```bash
@@ -135,6 +218,24 @@ curl -X DELETE http://localhost:8081/api/terms
 ```
 
 #### Search and Discovery
+
+**Get all terms:**
+```bash
+curl "http://localhost:8081/api/terms"
+```
+
+**Get all terms but you can actually read them:**
+
+Mac/Linux:
+```bash
+scripts/list-terms.sh
+```
+
+**Get term by ID:**
+```bash
+curl "http://localhost:8081/api/terms/(id)"
+```
+*Replace (id) with a valid Rot-ionary term id.*
 
 **Search by word:**
 ```bash
@@ -164,8 +265,9 @@ curl "http://localhost:8081/api/terms/(id)/definitions"
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
-
 **Add definition to a term:**
+
+Mac/Linux:
 ```bash
 curl -X POST http://localhost:8081/api/terms/(id)/definitions \
   -H "Content-Type: application/json" \
@@ -173,6 +275,13 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions \
     "meaning": "To throw something with force, often used as an exclamation of excitement",
     "createdBy": "user123"
   }'
+```
+
+Windows (PowerShell):
+```powershell
+curl -X POST http://localhost:8081/api/terms/(id)/definitions `
+  -H "Content-Type: application/json" `
+  -d '{\"meaning\": \"To throw something with force, often used as an exclamation of excitement\", \"createdBy\": \"user123\"}'
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
@@ -194,26 +303,52 @@ Rot-ionary's AI services provide three conversational agents with session-based 
 **Note**: Each service needs the target term to be in the Rot-ionary database already - If the term is absent, each agent can utilise the createTerm tool to add the desired word to the database automatically, provided they are given the word's definition and the user's username.
 
 **Tag Suggestion Agent** - Suggests and adds tags to terms:
+
+Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/tag-agent" \
   --data-urlencode "sessionId=1" \
   --data-urlencode "userMessage=I need tags for the term '(term)'"
 ```
+
+Windows (PowerShell):
+```powershell
+curl -G "http://localhost:8083/api/ai/tag-agent" `
+  --data-urlencode "sessionId=1" `
+  --data-urlencode "userMessage=I need tags for the term '(term)'"
+```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
+**Sentence Generation Agent** - Creates customised example sentences:
 
-**Sentence Generation Agent** - Creates customized example sentences:
+Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/sentence-agent" \
   --data-urlencode "sessionId=2" \
   --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
 ```
+
+Windows (PowerShell):
+```powershell
+curl -G "http://localhost:8083/api/ai/sentence-agent" `
+  --data-urlencode "sessionId=2" `
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
+```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
 **Etymology Agent** - Explains word origins and evolution:
+
+Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/etymology-agent" \
   --data-urlencode "sessionId=3" \
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+```
+
+Windows (PowerShell):
+```powershell
+curl -G "http://localhost:8083/api/ai/etymology-agent" `
+  --data-urlencode "sessionId=3" `
   --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
@@ -225,6 +360,8 @@ curl -G "http://localhost:8083/api/ai/etymology-agent" \
 **Base URL:** `http://localhost:8084/api/game`
 
 **Start a new game:**
+
+Mac/Linux:
 ```bash
 curl -X POST http://localhost:8084/api/game/start \
   -H "Content-Type: application/json" \
@@ -233,7 +370,16 @@ curl -X POST http://localhost:8084/api/game/start \
   }'
 ```
 
+Windows (PowerShell):
+```powershell
+curl -X POST http://localhost:8084/api/game/start `
+  -H "Content-Type: application/json" `
+  -d '{\"userSession\": \"player123\"}'
+```
+
 **Make a guess in a game:**
+
+Mac/Linux:
 ```bash
 curl -X POST http://localhost:8084/api/game/(id)/guess \
   -H "Content-Type: application/json" \
@@ -241,10 +387,16 @@ curl -X POST http://localhost:8084/api/game/(id)/guess \
     "guess": "hello"
   }'
 ```
+
+Windows (PowerShell):
+```powershell
+curl -X POST http://localhost:8084/api/game/(id)/guess `
+  -H "Content-Type: application/json" `
+  -d '{\"guess\": \"hello\"}'
+```
 *Replace (id) with an active Rotle game id.*
 
 Each guess includes the attempt details and updated `availableLetters` list.
-
 
 **Get game state:**
 ```bash
@@ -256,23 +408,44 @@ curl "http://localhost:8084/api/game/(id)"
 
 ### Building the Project
 
+#### Mac/Linux
 ```bash
 ./mvnw clean install
 ```
 
-### Kill specific microservices
+#### Windows (PowerShell)
+```powershell
+.\mvnw.cmd clean install
+```
+
+### Kill Specific Microservices
+
+#### Mac/Linux
 ```bash
 lsof -ti:(ms port) | xargs kill -9
 ```
+
+#### Windows (PowerShell)
+```powershell
+Get-NetTCPConnection -LocalPort (ms port) -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }
+```
+
 *Replace (ms port) with an active port.*
 
-Ports for reference: 
+**Ports for reference:**
 - Lexicon - 8081
 - Dictionary Analytics - 8082
 - Agentic AI - 8083
 - Rotle Game - 8084
 
-### Kill all microservices
+### Kill All Microservices
+
+#### Mac/Linux
 ```bash
 pkill -f "spring-boot"
+```
+
+#### Windows (PowerShell)
+```powershell
+Get-Process -Name "java" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*spring-boot*" } | Stop-Process -Force
 ```
