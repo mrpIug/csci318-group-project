@@ -1,6 +1,51 @@
-# Rot-ionary: Slang Dictionary Microservice Application
+# Rot-ionary: A Slang Dictionary Microservice Application
 
-A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", and more, featuring agentic AI-powered features, analytics, and a Wordle-style game called "Rotle".
+A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", and more, featuring agentic AI-powered services, dictionary analytics, and a Wordle-style game called "Rotle".
+
+## Rot-ionary Features
+
+### AI Agent Capabilities
+
+Rot-ionary's **Agentic AI Service** provides 3 specialised conversational agents, each with session-based memory (remembers last 20 messages):
+
+#### Tag Suggestion Agent
+- Analyses terms and suggests relevant tags (formality, context, usage type, cultural relevance)
+- Can add tags directly to terms in the database using `addTagToTerm` tool
+- Suggests tag categories such as gen-z, gaming, social-media, workplace, profanity etc.
+
+#### Sentence Generation Agent  
+- Creates customised example sentences showing how new age slang terms are used in real-world context
+- Adapts to user preferences (tone, context, audience, number of examples)
+- Can demonstrate various tones of examples such as formal, casual, humorous, sarcastic, etc.
+- Can demonstrate contexts: social media, work, texting, conversation, gaming
+
+#### Etymology Agent
+- Explains word origins and evolution, focusing on internet/social media usage
+- Discusses cultural context, usage patterns, and how terms spread
+- Mentions first known usage, popularisation sources, and linguistic features
+- Can dive deeper into related terms, timeline, or cultural significance
+
+**Important**: All agents can automatically create new terms in the database, if they do not already exist, using the `createTerm` tool, but they must retrieve the desired term definition and username from the user first.
+
+### Word of the Day System
+
+The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates every 5 seconds (made quicker for demonstration purposes), and is calculated by analysing what term has the most query events attached to them in the last hour.
+
+### Rotle Mechanics
+
+**Rotle** is a Wordle-style game using 5-letter slang terms, rather than legitimate english terms like normal Wordle. It works like this:
+
+- **Target Words**: Each target word chosen per game is 5 letters long, and also must already be in the Rot-ionary's database
+- **Game Rules**: 
+  - You get 6 attempts to guess the target word
+  - Each guess you make must be exactly 5 letters long, just like the target word
+  - The game ends when you either guess the target word correctly or run out of attempts
+- **Feedback System**: To assist with guessing the target word correctly, you receive a guess result for every guess attempt you make. It comes in  format `XXXXX` and has either one of these 3 letters in each position meaning various things:
+  - **C** (Correct): Letter is in the word and in the correct position
+  - **P** (Present): Letter is in the word but in the wrong position  
+  - **A** (Absent): Letter is not in the word at all
+
+So if your game's target word is `griddy` and you make a guess `gronk`, you will receive guess feedback `CCAAA`.
 
 ## Prerequisites
 
@@ -37,7 +82,7 @@ In Kafka root folder, clear zookeeper data directory first if zookeeper isn't st
 rm -rf /tmp/zookeeper
 ```
 
-Ensure Apache Kafka is running with these commands:
+Ensure Kafka is running with these commands:
 
 ```bash
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
@@ -54,7 +99,7 @@ In Kafka root folder, clear zookeeper data directory first if zookeeper isn't st
 Remove-Item -Recurse -Force C:\tmp\zookeeper -ErrorAction SilentlyContinue
 ```
 
-Ensure Apache Kafka is running with these commands:
+Ensure Kafka is running with these commands:
 
 ```powershell
 .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
@@ -73,6 +118,8 @@ First, install the parent POM and shared domain:
 
 ```bash
 ./mvnw -q -N install
+```
+```bash
 ./mvnw -q -pl shared-domain install
 ```
 
@@ -82,16 +129,18 @@ First, install the parent POM and shared domain:
 
 ```powershell
 .\mvnw.cmd -q -N install
+```
+```powershell
 .\mvnw.cmd -q -pl shared-domain install
 ```
 
 ### 2. Start Services
 
-*Start Kafka first, then all services can be started in parallel.*
+*Start Kafka first, then all microservices can be started in parallel.*
 
 #### Mac/Linux
 
-**Start Kafka** (if not already running):
+Start Kafka (if not already running):
 ```bash
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
 ```
@@ -99,7 +148,7 @@ First, install the parent POM and shared domain:
 ./bin/kafka-server-start.sh ./config/server.properties
 ```
 
-**Start each microservice** in separate terminals:
+Start each microservice in the Rot-ionary root folder, each in a separate terminal:
 
 **Lexicon Service (Port 8081):**
 ```bash
@@ -188,6 +237,8 @@ Mac/Linux:
 scripts/add-100-terms.sh
 ```
 
+*This script generates 100 random slang terms with definitions and tags to populate the database for testing.*
+
 **Update term tags:**
 
 Mac/Linux:
@@ -230,6 +281,8 @@ Mac/Linux:
 ```bash
 scripts/list-terms.sh
 ```
+
+*This script formats the JSON response in a readable way, showing terms with their IDs, words, tags, and definitions.*
 
 **Get term by ID:**
 ```bash
@@ -294,13 +347,13 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions `
 curl "http://localhost:8082/api/wotd/current"
 ```
 
+*Returns the most queried term from the last hour, updated every 5 seconds. Response includes the term ID, word, query count, and date.*
+
 ### Agentic AI Service (Port 8083)
 
 **Base URL:** `http://localhost:8083/api/ai`
 
-Rot-ionary's AI services provide three conversational agents with session-based memory. 
-
-**Note**: Each service needs the target term to be in the Rot-ionary database already - If the term is absent, each agent can utilise the createTerm tool to add the desired word to the database automatically, provided they are given the word's definition and the user's username.
+*Use the same `sessionId` to continue conversations. Each agent remembers the last 20 messages per session.*
 
 **Tag Suggestion Agent** - Suggests and adds tags to terms:
 
@@ -353,8 +406,6 @@ curl -G "http://localhost:8083/api/ai/etymology-agent" `
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
-**Note:** Use the same `sessionId` to continue a conversation. Each agent remembers the last 20 messages per session.
-
 ### Rotle Game Service (Port 8084)
 
 **Base URL:** `http://localhost:8084/api/game`
@@ -396,8 +447,6 @@ curl -X POST http://localhost:8084/api/game/(id)/guess `
 ```
 *Replace (id) with an active Rotle game id.*
 
-Each guess includes the attempt details and updated `availableLetters` list.
-
 **Get game state:**
 ```bash
 curl "http://localhost:8084/api/game/(id)"
@@ -436,7 +485,7 @@ Get-NetTCPConnection -LocalPort (ms port) -ErrorAction SilentlyContinue | Select
 - Lexicon - 8081
 - Dictionary Analytics - 8082
 - Agentic AI - 8083
-- Rotle Game - 8084
+- Rotle - 8084
 
 ### Kill All Microservices
 
