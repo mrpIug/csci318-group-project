@@ -12,19 +12,32 @@ public class GameCompletedEvent extends DomainEvent {
     private final int attemptsCount;
     private final String userSession;
     
-    @JsonCreator
-    public GameCompletedEvent(@JsonProperty("gameId") Long gameId, 
-                             @JsonProperty("targetWord") String targetWord, 
-                             @JsonProperty("won") boolean won, 
-                             @JsonProperty("attemptsCount") int attemptsCount, 
-                             @JsonProperty("userSession") String userSession) {
+    // Default constructor for Jackson deserialisation fallback
+    public GameCompletedEvent() {
         super("GameCompleted");
-        this.gameId = gameId;
-        this.targetWord = targetWord;
+        this.gameId = 0L;
+        this.targetWord = "unknown";
+        this.won = false;
+        this.attemptsCount = 0;
+        this.userSession = null;
+    }
+
+    // Constructor that handles both old and new formats
+    @JsonCreator
+    public GameCompletedEvent(@JsonProperty(value = "gameId", required = false) Long gameId,
+                             @JsonProperty(value = "targetWord", required = false) String targetWord,
+                             @JsonProperty(value = "won", required = false) boolean won,
+                             @JsonProperty(value = "attemptsCount", required = false) int attemptsCount,
+                             @JsonProperty(value = "userSession", required = false) String userSession) {
+        super("GameCompleted");
+        this.gameId = gameId != null ? gameId : 0L;
+        this.targetWord = targetWord != null ? targetWord : "unknown";
         this.won = won;
         this.attemptsCount = attemptsCount;
         this.userSession = userSession;
     }
+
+    // (legacy explicit constructor removed; JsonCreator handles both old/new formats)
     
     public Long getGameId() {
         return gameId;

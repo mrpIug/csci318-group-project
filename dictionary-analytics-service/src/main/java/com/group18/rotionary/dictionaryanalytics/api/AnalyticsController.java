@@ -1,7 +1,7 @@
 package com.group18.rotionary.dictionaryanalytics.api;
 
-import com.group18.rotionary.dictionaryanalytics.domain.entities.DailyWOTD;
-import com.group18.rotionary.dictionaryanalytics.service.WordOfTheDayService;
+import com.group18.rotionary.dictionaryanalytics.api.dto.WindowedTermStats;
+import com.group18.rotionary.dictionaryanalytics.service.WotdInteractiveQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,22 +11,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class AnalyticsController {
 
-    private final WordOfTheDayService wordOfTheDayService;
+    private final WotdInteractiveQueryService wotdInteractiveQueryService;
 
-    public AnalyticsController(WordOfTheDayService wordOfTheDayService) {
-        this.wordOfTheDayService = wordOfTheDayService;
+    public AnalyticsController(WotdInteractiveQueryService wotdInteractiveQueryService) {
+        this.wotdInteractiveQueryService = wotdInteractiveQueryService;
     }
 
-    @GetMapping("/wotd/current")
-    public ResponseEntity<DailyWOTD> current() {
-        DailyWOTD wotd = wordOfTheDayService.getCurrentWordOfTheDay();
-        if (wotd != null) {
-            return ResponseEntity.ok(wotd);
+    @GetMapping("/wotd/realtime")
+    public ResponseEntity<WindowedTermStats> getRealtimeWotd() {
+        WindowedTermStats realtimeWotd = wotdInteractiveQueryService.getCurrentWindowedWotd();
+        if (realtimeWotd != null) {
+            return ResponseEntity.ok(realtimeWotd);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
-
 

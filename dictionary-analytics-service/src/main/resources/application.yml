@@ -14,21 +14,50 @@ spring:
 
   cloud:
     function:
-      definition: recordQuery;consumeWotdUpdates;consumeGameCompleted
+      definition: processAnalytics;consumeGameCompleted
     stream:
       bindings:
-        recordQuery-in-0:
+        processAnalytics-in-0:
           destination: term.queried
-          group: query-processor
-        consumeWotdUpdates-in-0:
-          destination: term.queried
-          group: wotd-update-consumer
+          group: analytics-processor
+        processAnalytics-in-1:
+          destination: game.completed
+          group: analytics-processor
         consumeGameCompleted-in-0:
           destination: game.completed
           group: game-analytics-consumer
       kafka:
         binder:
           brokers: localhost:9092
+          configuration:
+            spring.json.trusted.packages: "*"
+        streams:
+          binder:
+            configuration:
+              commit.interval.ms: 500
+              application.id: dictionary-analytics-service-${random.uuid}
+              state.dir: /tmp/kafka-streams/dictionary-analytics-service-${random.uuid}
+              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
+              auto.create.topics.enable: true
+              processing.guarantee: at_least_once
+              default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
+              auto.offset.reset: latest
+              spring.json.use.type.headers: false
+              spring.json.trusted.packages: "*"
+              spring.json.value.fail.on.unknown.properties: false
+              spring.deserializer.value.allow.unknown.properties: true
+              spring.deserializer.value.accept.empty: false
+
+          bindings:
+            processAnalytics-in-0:
+              consumer:
+                configuration:
+                  spring.json.value.default.type: com.group18.rotionary.shared.domain.events.TermQueriedEvent
+            processAnalytics-in-1:
+              consumer:
+                configuration:
+                  spring.json.value.default.type: com.group18.rotionary.shared.domain.events.GameCompletedEvent
 
 server:
   port: 8082
@@ -36,3 +65,13 @@ server:
 logging:
   level:
     com.group18.rotionary.dictionaryanalytics: DEBUG
+
+windowstore:
+  wotd:
+    name: wotd-windowstore
+    size:
+      ms: 30000
+  game:
+    name: game-windowstore
+    size:
+      ms: 30000

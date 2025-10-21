@@ -20,6 +20,9 @@ spring:
       kafka:
         binder:
           brokers: localhost:9092
+          configuration:
+            spring.json.trusted.packages: "*"
+            spring.json.value.default.type: com.group18.rotionary.shared.domain.events.TermQueriedEvent
 
 server:
   port: 8081

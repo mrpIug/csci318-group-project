@@ -2,7 +2,7 @@
 
 A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", and more, featuring agentic AI-powered services, dictionary analytics, and a Wordle-style game called "Rotle".
 
-## Rot-ionary Features
+## Rot-ionary's Core Features
 
 ### AI Agent Capabilities
 
@@ -27,9 +27,22 @@ Rot-ionary's **Agentic AI Service** provides 3 specialised conversational agents
 
 **Important**: All agents can automatically create new terms in the database, if they do not already exist, using the `createTerm` tool, but they must retrieve the desired term definition and username from the user first.
 
-### Word of the Day System
+### Analytics System
 
-The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates in real-time using event-driven architecture and Kafka stream processing. Rot-ionary processes `TermQueriedEvent`s as they arrive from the Lexicon Service and immediately updates the Word of the Day based on the most queried term.
+#### Word of the Day
+
+The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates in real-time using event-driven architecture and Kafka stream processing. Rot-ionary processes `TermQueriedEvent` as they arrive from the Lexicon Service and immediately updates the Word of the Day based on the most queried term.
+
+#### Rotle Dashboard
+
+The **Dictionary Analytics Service** also provides game analytics for Rotle through real-time event processing. When players complete games, `GameCompletedEvent` is published and processed to generate insights including:
+
+- Total Rotle games played
+- Average Rotle game win rate
+- Average attempts to finish a Rotle game
+- Target words chosen most frequently by Rotle
+- Most recently completed Rotle games
+- Rot-ionary-wide player performance rankings and statistics  
 
 ### Rotle Mechanics
 
@@ -220,14 +233,14 @@ curl -X POST http://localhost:8081/api/terms \
     "word": "yeet",
     "createdBy": "user123",
     "tags": ["slang", "gen-z", "exclamation"]
-  }'
+  }' | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -X POST http://localhost:8081/api/terms `
   -H "Content-Type: application/json" `
-  -d '{\"word\": \"yeet\", \"createdBy\": \"user123\", \"tags\": [\"slang\", \"gen-z\", \"exclamation\"]}'
+  -d '{\"word\": \"yeet\", \"createdBy\": \"user123\", \"tags\": [\"slang\", \"gen-z\", \"exclamation\"]}' | jq
 ```
 
 **Create 100 random terms:**
@@ -247,74 +260,65 @@ curl -X PUT http://localhost:8081/api/terms/1 \
   -H "Content-Type: application/json" \
   -d '{
     "tags": ["slang", "gen-z", "exclamation", "gaming"]
-  }'
+  }' | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -X PUT http://localhost:8081/api/terms/1 `
   -H "Content-Type: application/json" `
-  -d '{\"tags\": [\"slang\", \"gen-z\", \"exclamation\", \"gaming\"]}'
+  -d '{\"tags\": [\"slang\", \"gen-z\", \"exclamation\", \"gaming\"]}' | jq
 ```
 
 **Delete a term:**
 ```bash
-curl -X DELETE http://localhost:8081/api/terms/(id)
+curl -X DELETE http://localhost:8081/api/terms/(id) | jq
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
 **Delete all terms:**
 ```bash
-curl -X DELETE http://localhost:8081/api/terms
+curl -X DELETE http://localhost:8081/api/terms | jq
 ```
 
 #### Search and Discovery
 
 **Get all terms:**
 ```bash
-curl "http://localhost:8081/api/terms"
+curl "http://localhost:8081/api/terms" | jq
 ```
-
-**Get all terms but you can actually read them:**
-
-Mac/Linux:
-```bash
-scripts/list-terms.sh
-```
-
-*This script formats the JSON response in a readable way, showing terms with their IDs, words, tags, and definitions.*
 
 **Get term by ID:**
 ```bash
-curl "http://localhost:8081/api/terms/(id)"
+curl "http://localhost:8081/api/terms/(id)" | jq
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
 **Search by word:**
 ```bash
-curl "http://localhost:8081/api/terms/search?word=yeet"
+curl "http://localhost:8081/api/terms/search?word=yeet" | jq
 ```
 
 **Search by tag:**
 ```bash
-curl "http://localhost:8081/api/terms/search?tag=gen-z"
+curl "http://localhost:8081/api/terms/search?tag=gen-z" | jq
 ```
 
 **Get random term:**
 ```bash
-curl "http://localhost:8081/api/terms/random"
+curl "http://localhost:8081/api/terms/random" | jq
 ```
 
 **Get random 5-letter term (see valid terms for rotle):**
 ```bash
-curl "http://localhost:8081/api/terms/random-five"
+curl "http://localhost:8081/api/terms/random-five" | jq
 ```
 
 #### Definitions
 
 **Get definitions for a term:**
 ```bash
-curl "http://localhost:8081/api/terms/(id)/definitions"
+curl "http://localhost:8081/api/terms/(id)/definitions" | jq
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
@@ -327,14 +331,14 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions \
   -d '{
     "meaning": "To throw something with force, often used as an exclamation of excitement",
     "createdBy": "user123"
-  }'
+  }' | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -X POST http://localhost:8081/api/terms/(id)/definitions `
   -H "Content-Type: application/json" `
-  -d '{\"meaning\": \"To throw something with force, often used as an exclamation of excitement\", \"createdBy\": \"user123\"}'
+  -d '{\"meaning\": \"To throw something with force, often used as an exclamation of excitement\", \"createdBy\": \"user123\"}' | jq
 ```
 *Replace (id) with a valid Rot-ionary term id.*
 
@@ -342,12 +346,37 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions `
 
 **Base URL:** `http://localhost:8082/api`
 
-**Get current word of the day:**
+#### Word of the Day Analytics
+
+**Get word of the day:**
 ```bash
-curl "http://localhost:8082/api/wotd/current"
+curl "http://localhost:8082/api/wotd/realtime" | jq
 ```
 
-*Returns the most queried term updated in real-time as users search for terms. The Word of the Day changes immediately when query events are processed through Kafka stream processing.
+**WOTD Analytics test script:**
+
+Mac/Linux:
+```bash
+scripts/test-term-analytics.sh
+```
+
+*This script creates a random slang term, adds a definition, and queries it 5 times to generate analytics data for testing Word of the Day.*
+
+#### Game Analytics
+
+**Get Rotle game analytics:**
+```bash
+curl "http://localhost:8082/api/game-stats/dashboard" | jq
+```
+
+**Rotle Game Analytics test script:**
+
+Mac/Linux:
+```bash
+scripts/play-rotle-games.sh
+```
+
+*This script plays 3 complete Rotle games with random usernames to generate game analytics data for testing Rotle's analytics.*
 
 ### Agentic AI Service (Port 8083)
 
@@ -361,14 +390,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/tag-agent" \
   --data-urlencode "sessionId=1" \
-  --data-urlencode "userMessage=I need tags for the term '(term)'"
+  --data-urlencode "userMessage=I need tags for the term '(term)'" | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/tag-agent" `
   --data-urlencode "sessionId=1" `
-  --data-urlencode "userMessage=I need tags for the term '(term)'"
+  --data-urlencode "userMessage=I need tags for the term '(term)'" | jq
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
@@ -378,14 +407,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/sentence-agent" \
   --data-urlencode "sessionId=2" \
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'" | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/sentence-agent" `
   --data-urlencode "sessionId=2" `
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'" | jq
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
@@ -395,14 +424,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/etymology-agent" \
   --data-urlencode "sessionId=3" \
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?" | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/etymology-agent" `
   --data-urlencode "sessionId=3" `
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?" | jq
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
@@ -418,14 +447,14 @@ curl -X POST http://localhost:8084/api/game/start \
   -H "Content-Type: application/json" \
   -d '{
     "userSession": "player123"
-  }'
+  }' | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -X POST http://localhost:8084/api/game/start `
   -H "Content-Type: application/json" `
-  -d '{\"userSession\": \"player123\"}'
+  -d '{\"userSession\": \"player123\"}' | jq
 ```
 
 **Make a guess in a game:**
@@ -436,20 +465,20 @@ curl -X POST http://localhost:8084/api/game/(id)/guess \
   -H "Content-Type: application/json" \
   -d '{
     "guess": "hello"
-  }'
+  }' | jq
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -X POST http://localhost:8084/api/game/(id)/guess `
   -H "Content-Type: application/json" `
-  -d '{\"guess\": \"hello\"}'
+  -d '{\"guess\": \"hello\"}' | jq
 ```
 *Replace (id) with an active Rotle game id.*
 
 **Get game state:**
 ```bash
-curl "http://localhost:8084/api/game/(id)"
+curl "http://localhost:8084/api/game/(id)" | jq
 ```
 *Replace (id) with an existing Rotle game id.*
 

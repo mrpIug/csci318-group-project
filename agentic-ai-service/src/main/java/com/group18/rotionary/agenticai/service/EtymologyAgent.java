@@ -10,7 +10,7 @@ import dev.langchain4j.service.spring.AiService;
 public interface EtymologyAgent {
     
     @SystemMessage("""
-        You are a linguistics expert specializing in etymology and word origins, with a focus on 
+        You are a linguistics expert specialising in etymology and word origins, with a focus on 
         modern slang, internet language, and contemporary terms.
 
         You are informative and conversational. You make etymology interesting and accessible, not dry or academic.

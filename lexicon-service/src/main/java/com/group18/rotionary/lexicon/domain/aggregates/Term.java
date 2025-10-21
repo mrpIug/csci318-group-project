@@ -63,9 +63,9 @@ public class Term {
         if (tag == null || tag.trim().isEmpty()) {
             throw new IllegalArgumentException("Tag cannot be null or empty");
         }
-        String normalized = tag.toLowerCase().trim();
-        if (!this.tags.contains(normalized)) {
-            this.tags.add(normalized);
+        String normalised = tag.toLowerCase().trim();
+        if (!this.tags.contains(normalised)) {
+            this.tags.add(normalised);
             this.updatedAt = LocalDateTime.now();
         }
     }

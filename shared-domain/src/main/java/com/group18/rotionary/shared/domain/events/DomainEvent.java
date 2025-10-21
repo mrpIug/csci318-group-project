@@ -14,10 +14,17 @@ public abstract class DomainEvent {
     private final String eventType;
     
     @JsonCreator
-    protected DomainEvent(@JsonProperty("eventType") String eventType) {
+    protected DomainEvent(@JsonProperty(value = "eventType", required = false) String eventType) {
         this.eventId = UUID.randomUUID().toString();
         this.occurredOn = LocalDateTime.now();
-        this.eventType = eventType;
+        this.eventType = eventType != null ? eventType : "Unknown";
+    }
+
+    // Default constructor for deserialisation fallback
+    protected DomainEvent() {
+        this.eventId = UUID.randomUUID().toString();
+        this.occurredOn = LocalDateTime.now();
+        this.eventType = "Unknown";
     }
     
     public String getEventId() {

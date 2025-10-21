@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Simple script to add 100 random terms to Rot-ionary
-# Creates terms with definitions, tags, createdBy, timestamps, etc.
+# Simple script to add 100 random terms to  Rot-ionary to populate the database for testing
 
 # Colors
 GREEN='\033[0;32m'

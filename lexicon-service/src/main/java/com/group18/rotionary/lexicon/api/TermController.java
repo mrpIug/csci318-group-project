@@ -51,7 +51,7 @@ public class TermController {
     public ResponseEntity<List<Term>> search(@RequestParam(required = false) String word,
                                              @RequestParam(required = false) String tag) {
         if (word != null) {
-            return termRepository.findByWord(domainService.normalizeWord(word))
+            return termRepository.findByWord(domainService.normaliseWord(word))
                     .map(found -> {
                         eventPublisher.publishTermQueried(new com.group18.rotionary.shared.domain.events.TermQueriedEvent(
                                 found.getId(), found.getWord(), "BY_WORD", null, word));
@@ -106,8 +106,8 @@ public class TermController {
         }
         
         // check if term already exists
-        String normalizedWord = domainService.normalizeWord(request.word());
-        if (termRepository.findByWord(normalizedWord).isPresent()) {
+        String normalisedWord = domainService.normaliseWord(request.word());
+        if (termRepository.findByWord(normalisedWord).isPresent()) {
             return ResponseEntity.status(409).build();
         }
         

@@ -64,8 +64,8 @@ public class LexiconDomainService {
         return fiveCharTerms.get(randomIndex);
     }
     
-    // normalizes word for storage/comparison
-    public String normalizeWord(String word) {
+    // normalises word for storage/comparison
+    public String normaliseWord(String word) {
         if (word == null) {
             return null;
         }

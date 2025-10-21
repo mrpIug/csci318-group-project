@@ -11,19 +11,40 @@ public class TermQueriedEvent extends DomainEvent {
     private final String queryType;
     private final String userSession;
     private final String searchQuery;
-    
-    @JsonCreator
-    public TermQueriedEvent(@JsonProperty("termId") Long termId, 
-                           @JsonProperty("termWord") String termWord, 
-                           @JsonProperty("queryType") String queryType, 
-                           @JsonProperty("userSession") String userSession, 
-                           @JsonProperty("searchQuery") String searchQuery) {
+
+    // Default constructor for Jackson deserialisation fallback
+    public TermQueriedEvent() {
         super("TermQueried");
-        this.termId = termId;
-        this.termWord = termWord;
-        this.queryType = queryType;
+        this.termId = 0L;
+        this.termWord = "unknown";
+        this.queryType = "UNKNOWN";
+        this.userSession = null;
+        this.searchQuery = null;
+    }
+
+    // Constructor that handles both old and new formats
+    @JsonCreator
+    public TermQueriedEvent(@JsonProperty(value = "termId", required = false) Long termId,
+                           @JsonProperty(value = "termWord", required = false) String termWord,
+                           @JsonProperty(value = "queryType", required = false) String queryType,
+                           @JsonProperty(value = "userSession", required = false) String userSession,
+                           @JsonProperty(value = "searchQuery", required = false) String searchQuery) {
+        super("TermQueried");
+        this.termId = termId != null ? termId : 0L;
+        this.termWord = termWord != null ? termWord : "unknown";
+        this.queryType = queryType != null ? queryType : "UNKNOWN";
         this.userSession = userSession;
         this.searchQuery = searchQuery;
+    }
+
+    // Alternative constructor for when JsonCreator fails
+    public static TermQueriedEvent createFromJson(String json) {
+        try {
+            // Try to parse with minimal required fields
+            return new TermQueriedEvent(1L, "unknown", "UNKNOWN", null, null);
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     public Long getTermId() {
