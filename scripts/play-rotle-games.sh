@@ -77,7 +77,7 @@ play_game() {
     # Get the target word (for debugging - normally you wouldn't know this)
     game_state=$(curl -s "$ROTLE_URL/api/game/$game_id")
     target_word=$(echo "$game_state" | jq -r '.targetWord // empty')
-    echo "🎯 Target word: $target_word"
+    echo "Target word: $target_word"
     
     # Make 6 random guesses (to simulate a full game)
     echo "Making guesses..."
