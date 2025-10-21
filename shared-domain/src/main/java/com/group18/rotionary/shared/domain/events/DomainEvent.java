@@ -1,5 +1,8 @@
 package com.group18.rotionary.shared.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,7 +13,8 @@ public abstract class DomainEvent {
     private final LocalDateTime occurredOn;
     private final String eventType;
     
-    protected DomainEvent(String eventType) {
+    @JsonCreator
+    protected DomainEvent(@JsonProperty("eventType") String eventType) {
         this.eventId = UUID.randomUUID().toString();
         this.occurredOn = LocalDateTime.now();
         this.eventType = eventType;

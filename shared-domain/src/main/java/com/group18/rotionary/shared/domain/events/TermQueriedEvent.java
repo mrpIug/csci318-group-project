@@ -1,5 +1,8 @@
 package com.group18.rotionary.shared.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 // published when a term is searched/queried
 public class TermQueriedEvent extends DomainEvent {
     
@@ -9,7 +12,12 @@ public class TermQueriedEvent extends DomainEvent {
     private final String userSession;
     private final String searchQuery;
     
-    public TermQueriedEvent(Long termId, String termWord, String queryType, String userSession, String searchQuery) {
+    @JsonCreator
+    public TermQueriedEvent(@JsonProperty("termId") Long termId, 
+                           @JsonProperty("termWord") String termWord, 
+                           @JsonProperty("queryType") String queryType, 
+                           @JsonProperty("userSession") String userSession, 
+                           @JsonProperty("searchQuery") String searchQuery) {
         super("TermQueried");
         this.termId = termId;
         this.termWord = termWord;

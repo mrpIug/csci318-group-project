@@ -29,7 +29,7 @@ Rot-ionary's **Agentic AI Service** provides 3 specialised conversational agents
 
 ### Word of the Day System
 
-The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates every 5 seconds (made quicker for demonstration purposes), and is calculated by analysing what term has the most query events attached to them in the last hour.
+The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates in real-time using event-driven architecture and Kafka stream processing. Rot-ionary processes `TermQueriedEvent`s as they arrive from the Lexicon Service and immediately updates the Word of the Day based on the most queried term.
 
 ### Rotle Mechanics
 
@@ -347,7 +347,7 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions `
 curl "http://localhost:8082/api/wotd/current"
 ```
 
-*Returns the most queried term from the last hour, updated every 5 seconds. Response includes the term ID, word, query count, and date.*
+*Returns the most queried term updated in real-time as users search for terms. The Word of the Day changes immediately when query events are processed through Kafka stream processing.
 
 ### Agentic AI Service (Port 8083)
 

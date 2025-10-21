@@ -14,19 +14,18 @@ spring:
 
   cloud:
     function:
-      definition: recordQuery
+      definition: recordQuery;consumeWotdUpdates
     stream:
       bindings:
         recordQuery-in-0:
           destination: term.queried
           group: query-processor
+        consumeWotdUpdates-in-0:
+          destination: term.queried
+          group: wotd-update-consumer
       kafka:
         binder:
           brokers: localhost:9092
-        streams:
-          binder:
-            configuration:
-              commit.interval.ms: 1000
 
 server:
   port: 8082
