@@ -14,7 +14,7 @@ spring:
 
   cloud:
     function:
-      definition: recordQuery;consumeWotdUpdates
+      definition: recordQuery;consumeWotdUpdates;consumeGameCompleted
     stream:
       bindings:
         recordQuery-in-0:
@@ -23,6 +23,9 @@ spring:
         consumeWotdUpdates-in-0:
           destination: term.queried
           group: wotd-update-consumer
+        consumeGameCompleted-in-0:
+          destination: game.completed
+          group: game-analytics-consumer
       kafka:
         binder:
           brokers: localhost:9092

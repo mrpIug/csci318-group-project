@@ -1,5 +1,8 @@
 package com.group18.rotionary.shared.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 // published when a rotle game ends (won or lost)
 public class GameCompletedEvent extends DomainEvent {
     
@@ -9,7 +12,12 @@ public class GameCompletedEvent extends DomainEvent {
     private final int attemptsCount;
     private final String userSession;
     
-    public GameCompletedEvent(Long gameId, String targetWord, boolean won, int attemptsCount, String userSession) {
+    @JsonCreator
+    public GameCompletedEvent(@JsonProperty("gameId") Long gameId, 
+                             @JsonProperty("targetWord") String targetWord, 
+                             @JsonProperty("won") boolean won, 
+                             @JsonProperty("attemptsCount") int attemptsCount, 
+                             @JsonProperty("userSession") String userSession) {
         super("GameCompleted");
         this.gameId = gameId;
         this.targetWord = targetWord;
