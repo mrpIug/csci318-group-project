@@ -27,11 +27,11 @@ NOUNS=(
 
 # Sample 5-letter words for guesses
 GUESSES=(
-    "HELLO" "WORLD" "GAMES" "PLAYS" "WORDS" "SLANG" "TERMS" "COOL" "FIRE" "LIT"
-    "VIBES" "MOODS" "SWAG" "DRIP" "STYLE" "AESTH" "TREND" "HYPE" "BUZZ" "ENERGY"
-    "POWER" "FORCE" "MIGHT" "STRONG" "BRAVE" "SMART" "QUICK" "FAST" "SLOW" "CALM"
-    "PEACE" "LOVE" "HOPE" "DREAM" "GOALS" "PLANS" "IDEAS" "THOUGHTS" "MINDS" "HEARTS"
-    "SOULS" "SPIRITS" "GHOSTS" "ANGELS" "DEMONS" "HEROES" "VILLAINS" "FRIENDS" "ENEMIES" "RIVALS"
+    "HELLO" "WORLD" "GAMES" "PLAYS" "WORDS" "SLANG" "TERMS" "VIBES" "MOODS" "SWAGG"
+    "DRIPS" "STYLE" "TREND" "HYPES" "BUZZY" "POWER" "FORCE" "MIGHT" "BRAVE" "SMART"
+    "QUICK" "PEACE" "DREAM" "GOALS" "PLANS" "MINDS" "SOULS" "RIVALS" "ANGEL" "DEMON"
+    "FIRES" "QUEEN" "BOSSY" "VIBER" "PROUD" "CAUSE" "LOGIC" "CHILL" "FRESH" "THINK"
+    "TRICK" "WOVEN" "TIGER" "BLAZE" "EVENT" "POINT" "CRAVE" "STARS" "HEART" "GIANT"
 )
 
 echo -e "${BLUE}Starting Rotle Game Testing Script${NC}"
@@ -74,12 +74,7 @@ play_game() {
     
     echo -e "${GREEN}Game started with ID: $game_id${NC}"
     
-    # Get the target word (for debugging - normally you wouldn't know this)
-    game_state=$(curl -s "$ROTLE_URL/api/game/$game_id")
-    target_word=$(echo "$game_state" | jq -r '.targetWord // empty')
-    echo "Target word: $target_word"
-    
-    # Make 6 random guesses (to simulate a full game)
+    # Make 6 random guesses
     echo "Making guesses..."
     for attempt in {1..6}; do
         # Generate a random 5-letter word guess
@@ -101,7 +96,6 @@ play_game() {
             break
         fi
         
-        # Small delay between guesses
         sleep 0.5
     done
     
@@ -118,14 +112,13 @@ if ! curl -s "$ROTLE_URL/api/game/health" > /dev/null 2>&1; then
 fi
 echo -e "${GREEN}Rotle service is running${NC}"
 
-# Play 3 games
+# Play 3 games total
 echo ""
 echo -e "${BLUE}Playing 3 Rotle games...${NC}"
 for i in {1..3}; do
     username=$(generate_username)
     play_game "$username" $i
     
-    # Small delay between games
     if [ $i -lt 3 ]; then
         echo -e "${YELLOW}Waiting 2 seconds before next game...${NC}"
         sleep 2
