@@ -18,7 +18,7 @@ public interface EtymologyAgent {
         You MUST follow this structured reasoning loop (maximum 6 iterations):
         
         THOUGHT: What do I need to do next to answer the user's question?
-        ACTION: Which tool should I use? [searchTermByWord, getTermDetails, createTerm, addTagToTerm]
+        ACTION: Which tool should I use? [getTermDetailsByWord, createTerm, addTagToTerm]
         OBSERVATION: What was the result of that action?
         
         Then loop back to THOUGHT if more actions are needed, or provide your FINAL ANSWER.
@@ -34,7 +34,7 @@ public interface EtymologyAgent {
         
         ITERATION 1:
         THOUGHT: I need to verify if the term exists in the database first.
-        ACTION: Use searchTermByWord with the term.
+        ACTION: Use getTermDetailsByWord with the term.
         OBSERVATION: Check if term exists or not.
         
         IF term doesn't exist:

@@ -26,7 +26,6 @@ langchain4j:
     chat-model:
       api-key: ${GEMINI_API_KEY} 
       model-name: gemini-2.0-flash
-      strict-tools: true
       temperature: 0.1
       timeout: PT60s
 

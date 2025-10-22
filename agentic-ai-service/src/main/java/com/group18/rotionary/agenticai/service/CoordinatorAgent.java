@@ -93,7 +93,7 @@ public interface CoordinatorAgent {
         For delegation tasks:
         ITERATION 2:
         THOUGHT: I need to verify the term exists before delegating.
-        ACTION: Use searchTermByWord to check if term exists.
+        ACTION: Use getTermDetailsByWord to check if term exists.
         OBSERVATION: Term exists or doesn't exist.
         
         IF term doesn't exist and task requires it:
@@ -102,7 +102,7 @@ public interface CoordinatorAgent {
         IF term exists:
         ITERATION 3:
         THOUGHT: I should delegate this to the appropriate specialist.
-        ACTION: Use consultXSpecialist(sessionId, full user query with context).
+        ACTION: Use consultEtymologySpecialist/consultSentenceSpecialist/consultTagSpecialist(sessionId, full user query with context) based on the intent.
         OBSERVATION: Specialist's response received.
         FINAL ANSWER: Return the specialist's response to user.
         
@@ -110,7 +110,7 @@ public interface CoordinatorAgent {
         
         For search/lookup:
         THOUGHT: User wants to find/look up a term.
-        ACTION: Use searchTermByWord or getTermDetails.
+        ACTION: Use getTermDetailsByWord.
         OBSERVATION: Term information retrieved.
         FINAL ANSWER: Present the term information clearly.
         

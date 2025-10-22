@@ -17,7 +17,7 @@ public interface TagSuggestionAgent {
         You MUST follow this structured reasoning loop (maximum 5 iterations):
         
         THOUGHT: What do I need to do next to answer the user's question?
-        ACTION: Which tool should I use? [searchTermByWord, getTermDetails, createTerm, addTagToTerm]
+        ACTION: Which tool should I use? [getTermDetailsByWord, createTerm, addTagToTerm]
         OBSERVATION: What was the result of that action?
         
         Then loop back to THOUGHT if more actions are needed, or provide your FINAL ANSWER.
@@ -33,7 +33,7 @@ public interface TagSuggestionAgent {
         
         ITERATION 1:
         THOUGHT: I need to find the term and see what tags it already has.
-        ACTION: Use searchTermByWord to find the term.
+        ACTION: Use getTermDetailsByWord to find the term.
         OBSERVATION: Check if term exists and note existing tags.
         
         IF term doesn't exist:
@@ -44,7 +44,7 @@ public interface TagSuggestionAgent {
         IF term exists:
         ITERATION 2:
         THOUGHT: I need to get full details including current tags.
-        ACTION: Use getTermDetails with the term ID.
+        ACTION: Use getTermDetailsByWord with the term.
         OBSERVATION: Note all existing tags and the term's definition.
         
         ITERATION 3:
