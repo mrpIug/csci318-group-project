@@ -112,6 +112,48 @@ public class CombinedAnalyticsStreamProcessor {
             avgAttemptsByTarget.toStream()
                     .print(Printed.<Windowed<String>, Double>toSysOut().withLabel("Windowed attempt totals by target"));
 
+            // Player game counts
+            KTable<Windowed<String>, Long> playerGameCounts = gameStream
+                    .filter((key, value) -> value != null)
+                    .map((key, value) -> KeyValue.pair(value.getUserSession(), 1L))
+                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
+                    .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(GAME_WINDOW_SIZE_MS)))
+                    .count(Materialized.<String, Long, WindowStore<Bytes, byte[]>>as(GAME_WINDOWSTORE_NAME + "-player-counts")
+                            .withKeySerde(Serdes.String())
+                            .withValueSerde(Serdes.Long()));
+
+            // Player win totals
+            KTable<Windowed<String>, Double> playerWinTotals = gameStream
+                    .filter((key, value) -> value != null)
+                    .map((key, value) -> KeyValue.pair(value.getUserSession(), value.isWon() ? 1.0 : 0.0))
+                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
+                    .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(GAME_WINDOW_SIZE_MS)))
+                    .aggregate(() -> 0.0, (key, value, aggregate) -> aggregate + value,
+                            Materialized.<String, Double, WindowStore<Bytes, byte[]>>as(GAME_WINDOWSTORE_NAME + "-player-wins")
+                                    .withKeySerde(Serdes.String())
+                                    .withValueSerde(Serdes.Double()));
+
+            // Player attempt totals
+            KTable<Windowed<String>, Double> playerAttemptTotals = gameStream
+                    .filter((key, value) -> value != null)
+                    .map((key, value) -> KeyValue.pair(value.getUserSession(), (double) value.getAttemptsCount()))
+                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Double()))
+                    .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(GAME_WINDOW_SIZE_MS)))
+                    .aggregate(() -> 0.0, (key, value, aggregate) -> aggregate + value,
+                            Materialized.<String, Double, WindowStore<Bytes, byte[]>>as(GAME_WINDOWSTORE_NAME + "-player-attempts")
+                                    .withKeySerde(Serdes.String())
+                                    .withValueSerde(Serdes.Double()));
+
+            // Debug print statements for player streams
+            playerGameCounts.toStream()
+                    .print(Printed.<Windowed<String>, Long>toSysOut().withLabel("Windowed player game counts"));
+            
+            playerWinTotals.toStream()
+                    .print(Printed.<Windowed<String>, Double>toSysOut().withLabel("Windowed player win totals"));
+            
+            playerAttemptTotals.toStream()
+                    .print(Printed.<Windowed<String>, Double>toSysOut().withLabel("Windowed player attempt totals"));
+
             return null;
         };
     }

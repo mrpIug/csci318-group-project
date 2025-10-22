@@ -364,9 +364,19 @@ scripts/test-term-analytics.sh
 
 #### Game Analytics
 
-**Get Rotle game analytics:**
+**Get Rotle game analytics (historical - all time):**
 ```bash
 curl "http://localhost:8082/api/game-stats/dashboard" | jq
+```
+
+**Get Rotle game analytics (real-time - current 30s window):**
+```bash
+curl "http://localhost:8082/api/game-stats/dashboard/realtime" | jq
+```
+
+**Get historical analytics (explicit):**
+```bash
+curl "http://localhost:8082/api/game-stats/dashboard/historical" | jq
 ```
 
 **Rotle Game Analytics test script:**
