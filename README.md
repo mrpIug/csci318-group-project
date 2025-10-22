@@ -6,26 +6,32 @@ A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", an
 
 ### AI Agent Capabilities
 
-Rot-ionary's **Agentic AI Service** provides 3 specialised conversational agents, each with session-based memory (remembers last 20 messages):
+Rot-ionary's **Agentic AI Service** provides a **hierarchical multi-agent system** featuring a coordinator agent that manages 3 specialised worker agents, each with session-based memory (remembers last 20 messages). These are described below:
 
-#### Tag Suggestion Agent
+#### Coordinator Agent
+- Main entry point for all AI requests (unless you specifically ask for the specialised agents)
+- Handles term searches, creation, and lookups
+- Automatically determines whether to handle requests directly or consult specialists using `CoordinatorTools`
+
+#### Tag Suggestion Agent (Specialist)
 - Analyses terms and suggests relevant tags (formality, context, usage type, cultural relevance)
 - Can add tags directly to terms in the database using `addTagToTerm` tool
-- Suggests tag categories such as gen-z, gaming, social-media, workplace, profanity etc.
+- Suggests tag categories such as gen-z, gaming, social-media, workplace, profanity, etc.
+- Delegated to by coordinator when users need help categorising or organising terms
 
-#### Sentence Generation Agent  
-- Creates customised example sentences showing how new age slang terms are used in real-world context
-- Adapts to user preferences (tone, context, audience, number of examples)
-- Can demonstrate various tones of examples such as formal, casual, humorous, sarcastic, etc.
-- Can demonstrate contexts: social media, work, texting, conversation, gaming
+#### Sentence Generation Agent (Specialist)
+- Creates customised example sentences showing how new age slang terms are used in real-world contexts
+- Takes user preferences (tone, context, audience, number of examples) into account
+- Delegated to by coordinator when users want example sentences or usage demonstrations
 
-#### Etymology Agent
-- Explains word origins and evolution, focusing on internet/social media usage
+#### Etymology Agent (Specialist)
+- Explains term origins and evolution, focusing on internet/social media usage
 - Discusses cultural context, usage patterns, and how terms spread
 - Mentions first known usage, popularisation sources, and linguistic features
 - Can dive deeper into related terms, timeline, or cultural significance
+- Delegated to by coordinator when users ask about term origins or etymology
 
-**Important**: All agents can automatically create new terms in the database, if they do not already exist, using the `createTerm` tool, but they must retrieve the desired term definition and username from the user first.
+**Note**: All agents can automatically create new terms in the database if they don't exist, using the `createTerm` tool, but they must first retrieve the desired term definition and username from the user.
 
 ### Analytics System
 
@@ -35,7 +41,7 @@ The **Dictionary Analytics Service** automatically displays the Word of the Day,
 
 #### Rotle Dashboard
 
-The **Dictionary Analytics Service** also provides game analytics for Rotle through real-time event processing. When players complete games, `GameCompletedEvent` is published and processed to generate insights including:
+The **Dictionary Analytics Service** provides both historical and real-time game analytics for Rotle through database event querying and stream processing. When Rot-ionary users complete Rotle games, `GameCompletedEvent` is published and processed to generate insights of:
 
 - Total Rotle games played
 - Average Rotle game win rate
@@ -60,13 +66,21 @@ The **Dictionary Analytics Service** also provides game analytics for Rotle thro
 
 So if your game's target word is `griddy` and you make a guess `gronk`, you will receive guess feedback `CCAAA`.
 
-## Prerequisites
+## Core Dependencies
 
-- Java 21
-- Maven 3.6+
-- Apache Kafka
-- Gemini API Key
-
+| Dependency | Purpose |
+|------------|---------|
+| **Spring Boot** | Main application framework |
+| **Spring Web** | RESTful API endpoints |
+| **Spring Data JPA** | Database persistence layer |
+| **H2 Database** | In-memory database |
+| **Spring Cloud Stream** | Event-driven framework |
+| **Spring Cloud Stream Kafka** | Kafka binder for Spring Cloud Stream |
+| **Kafka Streams** | Stream processing |
+| **Spring Kafka** | Direct Kafka integration |
+| **LangChain4j** | Hierarchical multi-agent system orchestration with ReAct prompting |
+| **Spring Boot Actuator** | Debugging and logging within Rot-ionary |
+| **Google AI Gemini** | LLM provider for Rot-ionary's AI agents |
 ## Configuration
 
 ### Environment Variables
@@ -219,8 +233,6 @@ Start each microservice in the Rot-ionary root folder, each in a separate termin
 
 ### Lexicon Service (Port 8081)
 
-**Base URL:** `http://localhost:8081/api/terms`
-
 #### Term Management
 
 **Create a new term:**
@@ -344,8 +356,6 @@ curl -X POST http://localhost:8081/api/terms/(id)/definitions `
 
 ### Dictionary Analytics Service (Port 8082)
 
-**Base URL:** `http://localhost:8082/api`
-
 #### Word of the Day Analytics
 
 **Get word of the day:**
@@ -364,17 +374,14 @@ scripts/test-term-analytics.sh
 
 #### Game Analytics
 
-**Get Rotle game analytics (historical - all time):**
-```bash
-curl "http://localhost:8082/api/game-stats/dashboard" | jq
-```
+**Get Rotle game real-time analytics (30 second window):**
 
-**Get Rotle game analytics (real-time - current 30s window):**
 ```bash
 curl "http://localhost:8082/api/game-stats/dashboard/realtime" | jq
 ```
 
-**Get historical analytics (explicit):**
+**Get Rotle game all-time analytics:**
+
 ```bash
 curl "http://localhost:8082/api/game-stats/dashboard/historical" | jq
 ```
@@ -390,64 +397,78 @@ scripts/play-rotle-games.sh
 
 ### Agentic AI Service (Port 8083)
 
-**Base URL:** `http://localhost:8083/api/ai`
+*Replace (term) with a term that is already in Rot-ionary's database, or one that isn't to see the `createTerm` tool usage.*
 
 *Use the same `sessionId` to continue conversations. Each agent remembers the last 20 messages per session.*
 
-**Tag Suggestion Agent** - Suggests and adds tags to terms:
-
 Mac/Linux:
+
+**Etymology questions - automatically delegated to EtymologyAgent**:
+
 ```bash
-curl -G "http://localhost:8083/api/ai/tag-agent" \
-  --data-urlencode "sessionId=1" \
-  --data-urlencode "userMessage=I need tags for the term '(term)'"
+curl -G "http://localhost:8083/api/ai/chat" \
+  --data-urlencode "sessionId=user1" \
+  --data-urlencode "userMessage=What is the etymology of '(term)'?"
+```
+
+**Example sentences - automatically delegated to SentenceGenerationAgent**:
+
+```bash
+curl -G "http://localhost:8083/api/ai/chat" \
+  --data-urlencode "sessionId=user1" \
+  --data-urlencode "userMessage=Give me 3 casual examples using '(term)'"
+```
+
+**Tag suggestions - automatically delegated to Tag Specialist**:
+```bash
+curl -G "http://localhost:8083/api/ai/chat" \
+  --data-urlencode "sessionId=user1" \
+  --data-urlencode "userMessage=What tags should '(term)' have?"
+```
+
+**Database operations - handled directly by coordinator**:
+
+```bash
+curl -G "http://localhost:8083/api/ai/chat" \
+  --data-urlencode "sessionId=user1" \
+  --data-urlencode "userMessage=Search for the term '(term)'"
 ```
 
 Windows (PowerShell):
+
+**Etymology questions**:
+
 ```powershell
-curl -G "http://localhost:8083/api/ai/tag-agent" `
-  --data-urlencode "sessionId=1" `
-  --data-urlencode "userMessage=I need tags for the term '(term)'"
-```
-*Replace (term) with a term that is already in Rot-ionary's databases.*
-
-**Sentence Generation Agent** - Creates customised example sentences:
-
-Mac/Linux:
-```bash
-curl -G "http://localhost:8083/api/ai/sentence-agent" \
-  --data-urlencode "sessionId=2" \
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
+curl -G "http://localhost:8083/api/ai/chat" `
+  --data-urlencode "sessionId=user1" `
+  --data-urlencode "userMessage=What is the etymology of '(term)'?"
 ```
 
-Windows (PowerShell):
+**Example sentences**:
+
 ```powershell
-curl -G "http://localhost:8083/api/ai/sentence-agent" `
-  --data-urlencode "sessionId=2" `
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
-```
-*Replace (term) with a term that is already in Rot-ionary's databases.*
-
-**Etymology Agent** - Explains word origins and evolution:
-
-Mac/Linux:
-```bash
-curl -G "http://localhost:8083/api/ai/etymology-agent" \
-  --data-urlencode "sessionId=3" \
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+curl -G "http://localhost:8083/api/ai/chat" `
+  --data-urlencode "sessionId=user1" `
+  --data-urlencode "userMessage=Give me 3 casual examples using '(term)'"
 ```
 
-Windows (PowerShell):
+**Tag suggestions**:
+
 ```powershell
-curl -G "http://localhost:8083/api/ai/etymology-agent" `
-  --data-urlencode "sessionId=3" `
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
+curl -G "http://localhost:8083/api/ai/chat" `
+  --data-urlencode "sessionId=user1" `
+  --data-urlencode "userMessage=What tags should '(term)' have?"
 ```
-*Replace (term) with a term that is already in Rot-ionary's databases.*
+
+**Database operations**:
+
+```powershell
+curl -G "http://localhost:8083/api/ai/chat" `
+  --data-urlencode "sessionId=user1" `
+  --data-urlencode "userMessage=Search for the term '(term)'"
+```
 
 ### Rotle Game Service (Port 8084)
-
-**Base URL:** `http://localhost:8084/api/game`
 
 **Start a new game:**
 
@@ -536,4 +557,4 @@ pkill -f "spring-boot"
 #### Windows (PowerShell)
 ```powershell
 Get-Process -Name "java" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*spring-boot*" } | Stop-Process -Force
-```
+``` 
