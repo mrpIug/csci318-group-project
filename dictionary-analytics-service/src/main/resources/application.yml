@@ -1,20 +1,14 @@
 spring:
-  application:
-    name: dictionary-analytics-service
-  profiles:
-    active: dev
-
+  application.name: dictionary-analytics-service
+  profiles.active: dev
   datasource:
     url: jdbc:h2:mem:dictionaryanalytics
     username: sa
     password:
-  jpa:
-    hibernate:
-      ddl-auto: update
-
+  jpa.hibernate.ddl-auto: update
+  
   cloud:
-    function:
-      definition: processAnalytics;consumeGameCompleted
+    function.definition: processAnalytics;consumeGameCompleted
     stream:
       bindings:
         processAnalytics-in-0:
@@ -32,46 +26,21 @@ spring:
           configuration:
             spring.json.trusted.packages: "*"
         streams:
-          binder:
-            configuration:
-              commit.interval.ms: 500
-              application.id: dictionary-analytics-service-${random.uuid}
-              state.dir: /tmp/kafka-streams/dictionary-analytics-service-${random.uuid}
-              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-              default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
-              auto.create.topics.enable: true
-              processing.guarantee: at_least_once
-              default.deserialization.exception.handler: org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
-              auto.offset.reset: latest
-              spring.json.use.type.headers: false
-              spring.json.trusted.packages: "*"
-              spring.json.value.fail.on.unknown.properties: false
-              spring.deserializer.value.allow.unknown.properties: true
-              spring.deserializer.value.accept.empty: false
-
+          binder.configuration.commit.interval.ms: 500
           bindings:
-            processAnalytics-in-0:
-              consumer:
-                configuration:
-                  spring.json.value.default.type: com.group18.rotionary.shared.domain.events.TermQueriedEvent
-            processAnalytics-in-1:
-              consumer:
-                configuration:
-                  spring.json.value.default.type: com.group18.rotionary.shared.domain.events.GameCompletedEvent
+            processAnalytics-in-0.consumer.configuration:
+              spring.json.value.default.type: com.group18.rotionary.shared.domain.events.TermQueriedEvent
+            processAnalytics-in-1.consumer.configuration:
+              spring.json.value.default.type: com.group18.rotionary.shared.domain.events.GameCompletedEvent
 
-server:
-  port: 8082
+server.port: 8082
 
-logging:
-  level:
-    com.group18.rotionary.dictionaryanalytics: DEBUG
+logging.level.com.group18.rotionary.dictionaryanalytics: DEBUG
 
 windowstore:
   wotd:
     name: wotd-windowstore
-    size:
-      ms: 30000
+    size.ms: 30000
   game:
     name: game-windowstore
-    size:
-      ms: 30000
+    size.ms: 30000

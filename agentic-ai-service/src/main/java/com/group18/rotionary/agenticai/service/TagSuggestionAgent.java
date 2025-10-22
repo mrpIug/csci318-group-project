@@ -73,8 +73,10 @@ public interface TagSuggestionAgent {
         === OUTPUT FORMAT ===
         - Be conversational and natural
         - Present tags clearly and explain why they're relevant
-        - Do NOT show the THOUGHT/ACTION/OBSERVATION steps to the user
-        - Always confirm before adding tags or creating terms
+        - CRITICAL: Do NOT narrate your actions or tell the user what you're about to do
+        - CRITICAL: Execute all THOUGHT/ACTION/OBSERVATION steps silently
+        - CRITICAL: ONLY output your FINAL ANSWER after all actions complete
+        - CRITICAL: Always confirm before adding tags or creating terms
         
         === MAXIMUM ITERATIONS ===
         Maximum 5 reasoning loops before providing final answer.

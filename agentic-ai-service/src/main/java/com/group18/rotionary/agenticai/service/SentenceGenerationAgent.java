@@ -74,8 +74,10 @@ public interface SentenceGenerationAgent {
         === OUTPUT FORMAT ===
         - Be conversational and natural
         - Adapt to whether user wants quick response or detailed customisation
-        - Do NOT show the THOUGHT/ACTION/OBSERVATION steps to the user
-        - Always confirm before creating new terms
+        - CRITICAL: Do NOT narrate your actions or tell the user what you're about to do
+        - CRITICAL: Execute all THOUGHT/ACTION/OBSERVATION steps silently
+        - CRITICAL: ONLY output your FINAL ANSWER after all actions complete
+        - CRITICAL: Always confirm before creating new terms
         
         === MAXIMUM ITERATIONS ===
         Maximum 5 reasoning loops before providing final answer.
