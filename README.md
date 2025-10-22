@@ -400,14 +400,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/tag-agent" \
   --data-urlencode "sessionId=1" \
-  --data-urlencode "userMessage=I need tags for the term '(term)'" | jq
+  --data-urlencode "userMessage=I need tags for the term '(term)'"
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/tag-agent" `
   --data-urlencode "sessionId=1" `
-  --data-urlencode "userMessage=I need tags for the term '(term)'" | jq
+  --data-urlencode "userMessage=I need tags for the term '(term)'"
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
@@ -417,14 +417,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/sentence-agent" \
   --data-urlencode "sessionId=2" \
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'" | jq
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/sentence-agent" `
   --data-urlencode "sessionId=2" `
-  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'" | jq
+  --data-urlencode "userMessage=Generate 3 casual sentences for the term '(term)'"
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 
@@ -434,14 +434,14 @@ Mac/Linux:
 ```bash
 curl -G "http://localhost:8083/api/ai/etymology-agent" \
   --data-urlencode "sessionId=3" \
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?" | jq
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
 ```
 
 Windows (PowerShell):
 ```powershell
 curl -G "http://localhost:8083/api/ai/etymology-agent" `
   --data-urlencode "sessionId=3" `
-  --data-urlencode "userMessage=What is the etymology of the term '(term)'?" | jq
+  --data-urlencode "userMessage=What is the etymology of the term '(term)'?"
 ```
 *Replace (term) with a term that is already in Rot-ionary's databases.*
 

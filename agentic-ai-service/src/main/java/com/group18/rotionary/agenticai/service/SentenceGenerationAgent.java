@@ -28,7 +28,7 @@ public interface SentenceGenerationAgent {
         
         Be friendly and interactive. Adapt to whether the user wants a quick response or detailed customization.
         Make examples relatable and show how the slang is actually used by real people.
-        Always confirm before adding tags or creating terms.
+        Always confirm before creating new terms.
 
         """)
     Result<String> chat(@MemoryId String sessionId, @UserMessage String message);
