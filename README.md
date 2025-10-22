@@ -4,6 +4,23 @@ A collaborative dictionary for modern slang terms like "yeet", "rizz", "unc", an
 
 ## Rot-ionary's Core Features
 
+### Analytics System
+
+#### Word of the Day
+
+Using the **Dictionary Analytics Service**, Rot-ionary automatically calculates the Word of the Day, which updates in real-time using event-driven architecture and Kafka stream processing. Rot-ionary processes `TermQueriedEvent` as they arrive from the Lexicon Service and immediately updates the Word of the Day based on the most queried term (within a 30 second tumbling window for demonstration purposes).
+
+#### Rotle Dashboard
+
+The **Dictionary Analytics Service** provides both all-time and real-time game analytics for Rotle through database event querying and stream processing (the tumbling window for Rotle's real-time analytics is also 30 seconds, but you can additionally view all-time Rotle analytics via the `GameAnalyticsRepository`). When Rot-ionary users complete Rotle games, `GameCompletedEvent` is published and processed to generate insights of:
+
+- Total Rotle games played
+- Average Rotle game win rate
+- Average attempts to finish a Rotle game
+- Target words chosen most frequently by Rotle
+- Most recently completed Rotle games
+- Rot-ionary-wide player performance rankings and statistics  
+
 ### AI Agent Capabilities
 
 Rot-ionary's **Agentic AI Service** provides a **hierarchical multi-agent system** featuring a coordinator agent that manages 3 specialised worker agents, each with session-based memory (remembers last 20 messages). These are described below:
@@ -32,23 +49,6 @@ Rot-ionary's **Agentic AI Service** provides a **hierarchical multi-agent system
 - Delegated to by coordinator when users ask about term origins or etymology
 
 **Note**: All agents can automatically create new terms in the database if they don't exist, using the `createTerm` tool, but they must first retrieve the desired term definition and username from the user.
-
-### Analytics System
-
-#### Word of the Day
-
-The **Dictionary Analytics Service** automatically displays the Word of the Day, which updates in real-time using event-driven architecture and Kafka stream processing. Rot-ionary processes `TermQueriedEvent` as they arrive from the Lexicon Service and immediately updates the Word of the Day based on the most queried term.
-
-#### Rotle Dashboard
-
-The **Dictionary Analytics Service** provides both historical and real-time game analytics for Rotle through database event querying and stream processing. When Rot-ionary users complete Rotle games, `GameCompletedEvent` is published and processed to generate insights of:
-
-- Total Rotle games played
-- Average Rotle game win rate
-- Average attempts to finish a Rotle game
-- Target words chosen most frequently by Rotle
-- Most recently completed Rotle games
-- Rot-ionary-wide player performance rankings and statistics  
 
 ### Rotle Mechanics
 

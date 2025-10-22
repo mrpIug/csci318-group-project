@@ -37,10 +37,10 @@ public class TermQueriedEvent extends DomainEvent {
         this.searchQuery = searchQuery;
     }
 
-    // Alternative constructor for when JsonCreator fails
+    // Alternative constructor if JsonCreator fails
     public static TermQueriedEvent createFromJson(String json) {
         try {
-            // Try to parse with minimal required fields
+            // Parse with minimal required fields
             return new TermQueriedEvent(1L, "unknown", "UNKNOWN", null, null);
         } catch (Exception e) {
             return null;

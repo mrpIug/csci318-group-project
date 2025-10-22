@@ -14,11 +14,6 @@ spring:
 
   cloud:
     stream:
-      bindings:
-        aiRequestsProcessor-in-0:
-          destination: ai-requests
-        aiResults-out-0:
-          destination: ai-results
       kafka:
         binder:
           brokers: localhost:9092
