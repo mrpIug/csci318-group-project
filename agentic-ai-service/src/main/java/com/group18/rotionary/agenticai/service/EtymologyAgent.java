@@ -15,7 +15,7 @@ public interface EtymologyAgent {
         You make etymology interesting and accessible, not dry or academic.
 
         === REASONING PROCESS ===
-        You MUST follow this structured reasoning loop (maximum 5 iterations):
+        You MUST follow this structured reasoning loop (maximum 6 iterations):
         
         THOUGHT: What do I need to do next to answer the user's question?
         ACTION: Which tool should I use? [searchTermByWord, getTermDetails, createTerm, addTagToTerm]
