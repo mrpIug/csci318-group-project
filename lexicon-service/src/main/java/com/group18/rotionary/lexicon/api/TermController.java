@@ -72,6 +72,21 @@ public class TermController {
         return ResponseEntity.badRequest().build();
     }
 
+    @DeleteMapping("/search")
+    @Transactional
+    public ResponseEntity<Void> deleteByWord(@RequestParam String word) {
+        if (word == null || word.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        String normalised = domainService.normaliseWord(word);
+        java.util.Optional<Term> term = termRepository.findByWord(normalised);
+        if (term.isPresent()) {
+            termRepository.delete(term.get());
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/random")
     public ResponseEntity<Term> random() {
         List<Term> allTerms = termRepository.findAll();
