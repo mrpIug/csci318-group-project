@@ -103,12 +103,6 @@ $env:GEMINI_API_KEY = "your-gemini-api-key-here"
 
 #### Mac/Linux
 
-In Kafka root folder, clear zookeeper data directory first if zookeeper isn't starting:
-
-```bash
-rm -rf /tmp/zookeeper
-```
-
 Ensure Kafka is running with these commands:
 
 ```bash
@@ -119,12 +113,6 @@ Ensure Kafka is running with these commands:
 ```
 
 #### Windows (PowerShell)
-
-In Kafka root folder, clear zookeeper data directory first if zookeeper isn't starting:
-
-```powershell
-Remove-Item -Recurse -Force C:\tmp\zookeeper -ErrorAction SilentlyContinue
-```
 
 Ensure Kafka is running with these commands:
 
