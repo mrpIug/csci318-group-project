@@ -183,6 +183,4 @@ done
 
 echo ""
 echo -e "${GREEN}All games completed${NC}"
-echo -e "${BLUE}Check the analytics dashboard (historical): curl -s 'http://localhost:8082/api/game-stats/dashboard' | jq .${NC}"
-echo -e "${BLUE}Check the analytics dashboard (real-time): curl -s 'http://localhost:8082/api/game-stats/dashboard/realtime' | jq .${NC}"
 echo -e "${BLUE}=====================================${NC}"

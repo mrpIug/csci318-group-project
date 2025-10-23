@@ -209,5 +209,4 @@ done
 
 echo ""
 echo -e "${GREEN}Term testing completed${NC}"
-echo -e "${BLUE}Check the WOTD analytics: curl -s 'http://localhost:8082/api/wotd/realtime' | jq .${NC}"
 echo -e "${BLUE}===============================${NC}"
