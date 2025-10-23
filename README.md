@@ -229,6 +229,53 @@ Start each microservice in the Rot-ionary root folder, each in a separate termin
 .\mvnw.cmd -q -f rotle-game-service/pom.xml spring-boot:run
 ```
 
+## Rot-ionary Demonstration Scripts
+**Note:** These scripts and endpoints are also placed within their respective microservices further down, they are just here for quick demonstrations.
+
+If you have just started Rot-ionary and have no data in any of the microservices, consider running these scripts (in Rot-ionary's root folder) to populate the databases and view  stream processing capabilties:
+
+**Create 100 random terms:**
+
+Mac/Linux:
+```bash
+scripts/add-100-terms.sh
+```
+
+*This script creates 100 random terms and adds them to the Lexicon microservice's databases so you can view them, update them, delete them, use them to play Rotle, or have them ready for any other feature that uses terms.*
+
+**WOTD Analytics test script:**
+
+Mac/Linux:
+```bash
+scripts/test-term-analytics.sh
+```
+
+*This script creates a random slang term, adds a definition, and queries it 5 times to generate analytics data for testing Word of the Day.*
+
+**Get word of the day:**
+```bash
+curl "http://localhost:8082/api/wotd/realtime" | jq
+```
+
+*After using the WOTD Analytics test script, use the following REST API to view the windowed term query results (30 second window) and see the Word of the Day.*
+
+**Rotle Game Analytics test script:**
+
+Mac/Linux:
+```bash
+scripts/play-rotle-games.sh
+```
+
+*This script plays 3 complete Rotle games with random usernames to generate game analytics data for testing Rotle's analytics.*
+
+**Get Rotle game real-time analytics (30 second window):**
+
+```bash
+curl "http://localhost:8082/api/game-stats/dashboard/realtime" | jq
+```
+
+*After using the Rotle Game Analytics test script, use the following REST API to view the combined windowed rotle game results (30 second window).*
+
 ## API Usage Examples
 
 ### Lexicon Service (Port 8081)
@@ -282,11 +329,16 @@ curl -X PUT http://localhost:8081/api/terms/1 `
   -d '{\"tags\": [\"slang\", \"gen-z\", \"exclamation\", \"gaming\"]}' | jq
 ```
 
-**Delete a term:**
+**Delete a term by ID:**
 ```bash
 curl -X DELETE http://localhost:8081/api/terms/(id) | jq
 ```
 *Replace (id) with a valid Rot-ionary term id.*
+
+**Delete a term by word:**
+```bash
+curl -X DELETE "http://localhost:8081/api/terms/search?word=yeet" | jq
+```
 
 **Delete all terms:**
 ```bash

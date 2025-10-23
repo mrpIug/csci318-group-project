@@ -32,7 +32,6 @@ public class GameAnalytics {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor for JPA
     protected GameAnalytics() {}
 
     public GameAnalytics(Long gameId, String targetWord, boolean won, int attemptsCount, String userSession) {
@@ -45,7 +44,6 @@ public class GameAnalytics {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters
     public Long getId() { return id; }
     public Long getGameId() { return gameId; }
     public String getTargetWord() { return targetWord; }
@@ -55,7 +53,6 @@ public class GameAnalytics {
     public LocalDateTime getCompletedAt() { return completedAt; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
-    // Setters
     public void setId(Long id) { this.id = id; }
     public void setGameId(Long gameId) { this.gameId = gameId; }
     public void setTargetWord(String targetWord) { this.targetWord = targetWord; }

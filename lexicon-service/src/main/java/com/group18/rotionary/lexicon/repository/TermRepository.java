@@ -15,7 +15,6 @@ public interface TermRepository extends JpaRepository<Term, Long> {
     @Query("SELECT t FROM Term t WHERE LENGTH(t.word) = :length")
     List<Term> findByWordLength(@Param("length") int length);
 
-    // tag search handled in controller using element collection filter
 }
 
 

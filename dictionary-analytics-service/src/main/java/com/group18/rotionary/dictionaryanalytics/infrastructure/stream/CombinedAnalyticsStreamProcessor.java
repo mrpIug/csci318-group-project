@@ -83,7 +83,7 @@ public class CombinedAnalyticsStreamProcessor {
                                     .withValueSerde(Serdes.Double())
                     );
 
-            // Average attempts aggregation by target word
+            // Average rotle game attempts aggregation by target word
             KTable<Windowed<String>, Double> avgAttemptsByTarget = gameStream
                     .filter((key, value) -> value != null) // Filter out null values
                     .map((key, value) -> {

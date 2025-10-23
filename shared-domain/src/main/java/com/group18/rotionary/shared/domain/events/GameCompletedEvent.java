@@ -22,7 +22,7 @@ public class GameCompletedEvent extends DomainEvent {
         this.userSession = null;
     }
 
-    // Constructor that handles both old and new formats
+    // Constructor that handles old and new rotle game completed event formats
     @JsonCreator
     public GameCompletedEvent(@JsonProperty(value = "gameId", required = false) Long gameId,
                              @JsonProperty(value = "targetWord", required = false) String targetWord,
@@ -36,8 +36,6 @@ public class GameCompletedEvent extends DomainEvent {
         this.attemptsCount = attemptsCount;
         this.userSession = userSession;
     }
-
-    // (legacy explicit constructor removed; JsonCreator handles both old/new formats)
     
     public Long getGameId() {
         return gameId;

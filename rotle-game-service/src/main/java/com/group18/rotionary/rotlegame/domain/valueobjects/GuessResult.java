@@ -6,9 +6,9 @@ import java.util.Objects;
 public class GuessResult {
     
     public enum LetterFeedback {
-        CORRECT('C'),   // guess letter is in right spot
-        PRESENT('P'),   // guess letter is in word, but wrong spot
-        ABSENT('A');    // guess letter is not in word
+        CORRECT('C'),   // guess letter is in word and in the right spot
+        PRESENT('P'),   // guess letter is in word but in the wrong spot
+        ABSENT('A');    // guess letter is not in word at all
         
         private final char symbol;
         
@@ -40,7 +40,7 @@ public class GuessResult {
         char[] guessChars = guess.toCharArray();
         boolean[] targetUsed = new boolean[5];
         
-        // first pass: mark correct letters
+        // mark correct letters
         for (int i = 0; i < 5; i++) {
             if (guessChars[i] == targetChars[i]) {
                 result[i] = LetterFeedback.CORRECT.getSymbol();
@@ -48,7 +48,7 @@ public class GuessResult {
             }
         }
         
-        // second pass: mark present letters
+        // mark present letters
         for (int i = 0; i < 5; i++) {
             if (result[i] == 0) {
                 for (int j = 0; j < 5; j++) {
@@ -61,7 +61,7 @@ public class GuessResult {
             }
         }
         
-        // third pass: mark absent letters
+        // mark absent letters
         for (int i = 0; i < 5; i++) {
             if (result[i] == 0) {
                 result[i] = LetterFeedback.ABSENT.getSymbol();
