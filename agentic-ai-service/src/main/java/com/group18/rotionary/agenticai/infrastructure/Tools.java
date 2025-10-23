@@ -67,6 +67,16 @@ public class Tools {
             String searchUrl = LEXICON_SERVICE_URL + "/search?word=" + word;
             List<Map<String, Object>> terms = restTemplate.getForObject(searchUrl, List.class);
 
+            // try again once if term not found
+            if ((terms == null || terms.isEmpty())) {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                terms = restTemplate.getForObject(searchUrl, List.class);
+            }
+
             if (terms == null || terms.isEmpty()) {
                 return "No term found with word '" + word + "'.";
             }
@@ -135,6 +145,13 @@ public class Tools {
 
             HttpEntity<Map<String, Object>> defEntity = new HttpEntity<>(createDefinitionRequest, headers);
             restTemplate.postForObject(definitionUrl, defEntity, Map.class);
+
+            // small delay to let the database catch up after term creation
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
             return "Successfully created term '" + word + "' (ID: " + termId + ") with definition: " + definition;
         } catch (Exception e) {

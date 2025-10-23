@@ -17,7 +17,13 @@ public class AiController {
     // multi-agent AI system endpoint
     @GetMapping("/chat")
     public String chat(@RequestParam String sessionId, @RequestParam String userMessage) {
-        Result<String> result = coordinatorAgent.chat(sessionId, userMessage);
+        // inject sessionId into the message context so gemini can actually see and use it without hallucinating
+        String contextualMessage = String.format(
+            "[SYSTEM CONTEXT: Your sessionId for this conversation is '%s'. Use this EXACT value when calling specialist tools.] User message: %s",
+            sessionId,
+            userMessage
+        );
+        Result<String> result = coordinatorAgent.chat(sessionId, contextualMessage);
         return result.content();
     }
 }

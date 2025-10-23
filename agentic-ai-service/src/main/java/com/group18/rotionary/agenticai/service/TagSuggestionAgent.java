@@ -30,6 +30,9 @@ public interface TagSuggestionAgent {
         === TAG SUGGESTION WORKFLOW ===
         
         When asked about tags for a term:
+
+        CRITICAL: ALWAYS call the getTermDetailsByWord tool to verify the term, even if previous conversation history suggests the term doesn't exist. 
+        The coordinator may have just created it.
         
         ITERATION 1:
         THOUGHT: I need to find the term and see what tags it already has.
@@ -61,6 +64,8 @@ public interface TagSuggestionAgent {
         THOUGHT: I should ask which tags the user wants to add.
         ACTION: Present the suggested tags and ask user to confirm which ones to add.
         OBSERVATION: Wait for user confirmation of specific tags.
+        If tags are denied: end the conversation politely.
+        If tags are confirmed: continue to the next iteration (ITERATION 5+).
         
         ITERATION 5+ (for each confirmed tag):
         THOUGHT: User confirmed tag X, I should add it now.
@@ -83,4 +88,3 @@ public interface TagSuggestionAgent {
         """)
     Result<String> chat(@MemoryId String sessionId, @UserMessage String message);
 }
-

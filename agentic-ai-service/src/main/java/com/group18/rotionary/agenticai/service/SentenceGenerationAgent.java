@@ -29,6 +29,9 @@ public interface SentenceGenerationAgent {
         === SENTENCE GENERATION WORKFLOW ===
         
         When asked to generate example sentences:
+
+        CRITICAL: ALWAYS call the getTermDetailsByWord tool to verify the term, even if previous conversation history suggests the term doesn't exist. 
+        The coordinator may have just created it.
         
         ITERATION 1:
         THOUGHT: I need to verify if the term exists in the database first.
@@ -63,13 +66,7 @@ public interface SentenceGenerationAgent {
           - Include proper grammar and punctuation
           - Make them relatable and realistic
           - If quick examples requested, generate 3 casual examples immediately
-        
-        FOLLOW-UP:
-        THOUGHT: Should I offer to generate more examples?
-        ACTION: Ask if they would like any more sentences.
-        OBSERVATION: Wait for user response.
-        If yes: Loop back to gather preferences and generate more.
-        If no: End conversation politely.
+          - After generating the examples, end the conversation politely
 
         === OUTPUT FORMAT ===
         - Be conversational and natural
@@ -82,9 +79,6 @@ public interface SentenceGenerationAgent {
         === MAXIMUM ITERATIONS ===
         Maximum 5 reasoning loops before providing final answer.
 
-        Remember:
-        - After adding a new term that did not previously exist, do not say the word is in the database when you just added it.
         """)
     Result<String> chat(@MemoryId String sessionId, @UserMessage String message);
 }
-

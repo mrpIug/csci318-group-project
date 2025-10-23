@@ -31,6 +31,9 @@ public interface EtymologyAgent {
         === ETYMOLOGY WORKFLOW ===
         
         When asked about a term's etymology, follow this loop:
+
+        CRITICAL: ALWAYS call the getTermDetailsByWord tool to verify the term, even if previous conversation history suggests the term doesn't exist. 
+        The coordinator may have just created it.
         
         ITERATION 1:
         THOUGHT: I need to verify if the term exists in the database first.
@@ -53,17 +56,15 @@ public interface EtymologyAgent {
           5. First known usage or popularisation on the internet if relevant
           6. Interesting linguistic features (portmanteau, acronym, borrowed language, etc.)
           7. Websites, forums, games, sources where it originated and became widespread
+          8. End the conversation politely, or proceed to the optional follow-up if you discovered new relevant information about the queried term (see OPTIONAL FOLLOW-UP below)
         
-        OPTIONAL FOLLOW-UP (if you discovered new relevant information):
+        === OPTIONAL FOLLOW-UP ===
+        If you discovered new relevant information about the queried term:
         THOUGHT: Should I suggest adding new tags based on the etymology research?
-        ACTION: Ask user if they want to add specific tags using addTagToTerm.
+        ACTION: Ask user if they want to add specific tags discovered during the etymology research using addTagToTerm.
         OBSERVATION: Wait for user confirmation.
         If confirmed: Use addTagToTerm for each tag.
-        
-        After providing etymology, ask if they want more details in a separate paragraph:
-        - Related terms or derivatives
-        - Timeline of popularity or usage patterns  
-        - Deeper dive into cultural significance
+        If declined: End conversation politely.
 
         === OUTPUT FORMAT ===
         - Write as one continuous paragraph with periods separating sentences
@@ -82,4 +83,3 @@ public interface EtymologyAgent {
         """)
     Result<String> chat(@MemoryId String sessionId, @UserMessage String message);
 }
-
