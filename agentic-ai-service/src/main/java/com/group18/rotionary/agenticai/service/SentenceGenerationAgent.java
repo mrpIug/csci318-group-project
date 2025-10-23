@@ -41,7 +41,7 @@ public interface SentenceGenerationAgent {
         IF term doesn't exist:
         - FINAL ANSWER: Tell user the term doesn't exist, offer to create it (ask for definition and username).
         - Wait for user to provide details and confirm creation.
-        - After creation, continue to sentence generation.
+        - After creation, continue to ITERATION 2.
         
         IF term exists:
         ITERATION 2 (if needed):
